@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
-      body: Column(
+      body: ListView(
         children: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height * 0.35,
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Form(
                 key: _formKey,
                 autovalidate: _autoValidate,
-                child: Column(
+                child: ListView(
                   children: <Widget>[
                     TextFormField(
                       validator: validateEmail,
@@ -358,7 +358,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         )),
                     Container(
-                        margin: EdgeInsets.only(top: 10, bottom: 15),
+                        margin: EdgeInsets.only(top: 10, bottom: 10),
                         height: MediaQuery.of(context).size.height * 0.05,
                         child: GestureDetector(
                           onTap: () {

@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:flights_app/home_page.dart';
 import 'package:flights_app/myCompteMoney/colored_card_page.dart';
 import 'package:flights_app/myCompteMoney/custom_gift_card.dart';
-import 'package:flights_app/myCompteMoney/first_page.dart';
+import 'package:flights_app/login_signup_screens/profile.dart';
+//import 'package:flights_app/myCompteMoney/first_page.dart';
 import 'package:flights_app/myCompteMoney/pass_code_page.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
+//import 'package:percent_indicator/linear_percent_indicator.dart';
 
 //void main() => runApp(HomeScreen());
 
@@ -51,6 +54,7 @@ class MyHomePageScreen extends StatefulWidget {
 }
 
 class HomeScreen extends State<MyHomePageScreen> {
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -172,7 +176,13 @@ class HomeScreen extends State<MyHomePageScreen> {
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Profile(),
+                          fullscreenDialog: true));
+                },
                 child: new ListTile(
                   title: new Text('Profil',
                       style: new TextStyle(color: Colors.blue)),

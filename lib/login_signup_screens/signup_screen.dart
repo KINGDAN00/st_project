@@ -36,7 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
-      body: Column(
+      body: ListView(
         children: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height * 0.20,
@@ -135,7 +135,7 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Form(
               key: _formKey,
               autovalidate: _autoValidate,
-              child: Column(
+              child: ListView(
                 children: <Widget>[
                   TextFormField(
                     validator: (value) {
