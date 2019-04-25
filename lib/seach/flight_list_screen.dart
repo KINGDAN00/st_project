@@ -1,8 +1,7 @@
+import 'package:flights_app/seach/flight_card.dart';
+import 'package:flights_app/seach/flight_dummy.dart';
+import 'package:flights_app/seach/flight_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flights_app/flights_details_screen.dart';
-import 'package:flights_app/flight_card.dart';
-import 'package:flights_app/flight_model.dart';
-import 'package:flights_app/flight_dummy.dart';
 
 class FlightListScreen extends StatelessWidget{
 

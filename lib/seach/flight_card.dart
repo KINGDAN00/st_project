@@ -1,6 +1,6 @@
+import 'package:flights_app/seach/flight_model.dart';
+import 'package:flights_app/seach/flights_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flights_app/flight_model.dart';
-import 'package:flights_app/flights_details_screen.dart';
 
 class FlightCard extends StatelessWidget{
   final Flight flight;

@@ -1,4 +1,6 @@
-import 'package:flights_app/flight_model.dart';
+
+
+import 'package:flights_app/seach/flight_model.dart';
 
 class FlightsMockData {
 

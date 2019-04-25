@@ -1,8 +1,8 @@
+import 'package:flights_app/seach/flight_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flights_app/flight_list_screen.dart';
 
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen1 extends StatefulWidget{
   @override
   HomeScreenState createState() {
     return new HomeScreenState();
@@ -10,7 +10,7 @@ class HomeScreen extends StatefulWidget{
 }
 
 
-class HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen1> {
 
   final nameController = TextEditingController();
 
@@ -73,7 +73,7 @@ class HomeScreenState extends State<HomeScreen> {
                 RaisedButton(
                   padding: EdgeInsets.symmetric(horizontal: 100.0),
                   child: new Text("Proceed"),
-                  color: Colors.amber,
+                  color: Colors.blueAccent,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0),
                   ),
                   onPressed: (){

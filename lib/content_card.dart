@@ -1,5 +1,6 @@
 import 'package:flights_app/multicity_input.dart';
 import 'package:flights_app/price_tab/price_tab.dart';
+import 'package:flights_app/seach/flight_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,6 +12,19 @@ class ContentCard extends StatefulWidget {
 class _ContentCardState extends State<ContentCard> {
   bool showInput = true;
   bool showInputTabOptions = true;
+
+  final nameController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +111,12 @@ class _ContentCardState extends State<ContentCard> {
         Padding(
           padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
           child: FloatingActionButton(
-            onPressed: () => setState(() => showInput = false),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      FlightListScreen(fullName: nameController.text)));
+              print(nameController.text);
+            },
             child: Icon(Icons.timeline, size: 36.0),
           ),
         ),

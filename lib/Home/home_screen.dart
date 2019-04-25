@@ -220,6 +220,19 @@ class HomeScreen extends State<MyHomePageScreen> {
                 onTap: () {},
                 child: new ListTile(
                   title: new Text(
+                    'Connexion',
+                    style: new TextStyle(color: Colors.blue),
+                  ),
+                  leading: new Icon(
+                    Icons.help,
+                    color: Colors.lightBlue,
+                  ),
+                ),
+              ),
+              new InkWell(
+                onTap: () {},
+                child: new ListTile(
+                  title: new Text(
                     'Aide',
                     style: new TextStyle(color: Colors.blue),
                   ),

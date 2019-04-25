@@ -22,8 +22,7 @@
 //     );
 //   }
 // }
-import 'package:flights_app/home_page.dart';
-import 'package:flights_app/login_signup_screens/login_screen.dart';
+import 'package:flights_app/Home/home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(new MyApp());
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: new LoginScreen(),
+      home: new MyHomePageScreen(),
     );
   }
 }
