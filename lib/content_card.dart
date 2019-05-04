@@ -1,5 +1,8 @@
+import 'package:flights_app/MyClasses/clsCritereSelect.dart';
+import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/multicity_input.dart';
 import 'package:flights_app/price_tab/price_tab.dart';
+import 'package:flights_app/seach/charger_agences.dart';
 import 'package:flights_app/seach/flight_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,7 +11,6 @@ class ContentCard extends StatefulWidget {
   @override
   _ContentCardState createState() => _ContentCardState();
 }
-
 class _ContentCardState extends State<ContentCard> {
   bool showInput = true;
   bool showInputTabOptions = true;
@@ -114,7 +116,10 @@ class _ContentCardState extends State<ContentCard> {
             onPressed: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      FlightListScreen(fullName: nameController.text)));
+                      GetHoraire()));
+              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+              //     builder: (BuildContext context) =>
+              //         FlightListScreen(fullName: nameController.text,catEngin:CritereSelect.refCatEngin,arrive:CritereSelect.arrive,depart: CritereSelect.depart,datedep: CritereSelect.datedep,)));
               print(nameController.text);
             },
             child: Icon(Icons.timeline, size: 36.0),

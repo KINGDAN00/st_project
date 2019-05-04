@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 class FlightDetailScreen extends StatelessWidget{
 
   final String passengerName;
-  final Flight flight;
+  //final Flight flight;
 
   FlightDetailScreen({
     this.passengerName,
-    this.flight
+   // this.flight
   });
 
   @override
@@ -89,7 +89,7 @@ class FlightDetailScreen extends StatelessWidget{
                   child: Column(
                     children: <Widget>[
                       FlightCard(
-                        flight: flight,
+                        //flight: flight,
                         isClickable: false,
                       ),
                       SizedBox(height: 20.0,),

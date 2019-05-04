@@ -9,18 +9,14 @@ class FlightCard extends StatelessWidget{
 
   FlightCard({this.flight, this.fullName, @required this.isClickable});
 
-  _cityStyle(code, cityName, time){
+  _cityStyle(cityName){
     return Expanded(
       child: Column(
         children: <Widget>[
-          Text(code, style: TextStyle(
-              color: Colors.black,
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold
-          ),),
+          
           Text(cityName, style: TextStyle(fontSize: 18.0),),
           SizedBox(height: 10.0,),
-          Text(time, style: TextStyle(color: Colors.grey, fontSize: 14.0),)
+          
         ],
       ),
     );
@@ -36,7 +32,7 @@ class FlightCard extends StatelessWidget{
                 builder: (context)
                 => FlightDetailScreen(
                   passengerName: fullName,
-                  flight: flight,
+                  //flight: flight,
                 )
             )
         ):null;
@@ -50,15 +46,26 @@ class FlightCard extends StatelessWidget{
           child: Padding(
             padding: const EdgeInsets.symmetric(
                 vertical:20.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                _cityStyle(flight.from, flight.fromCity, flight.departTime),
-                Icon(Icons.airplanemode_active),
-                _cityStyle(flight.to, flight.toCity, flight.arriveTime),
-              ],
-            ),
+          //   child: ListView(
+          //     children: <Widget>[
+          //       Text(flight.agence, style: TextStyle(
+          //     color: Colors.black,
+          //     fontSize: 40.0,
+          //     fontWeight: FontWeight.bold
+          // ),),
+          child:
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    _cityStyle(flight.fromCity),
+                    Icon(Icons.airplanemode_active),
+                    _cityStyle(flight.toCity),
+                  ],
+                ),
+            //     Text(flight.dateDepart, style: TextStyle(color: Colors.grey, fontSize: 14.0),)
+            //   ],
+            // ),
           ),
         ),
       ),

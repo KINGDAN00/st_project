@@ -4,6 +4,9 @@ import 'package:flights_app/rounded_button.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  final int catergorieEngin;
+
+  const HomePage({Key key, this.catergorieEngin}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

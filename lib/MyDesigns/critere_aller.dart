@@ -1,28 +1,28 @@
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
-import 'package:flights_app/typable_text.dart';
+import 'package:flights_app/MyDesigns/res_aller_simple.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class MulticityInput extends StatefulWidget {
+class CritereAller extends StatefulWidget {
   @override
-  MulticityInputState createState() {
-    return new MulticityInputState();
+  CritereAllerState createState() {
+    return new CritereAllerState();
   }
 }
 
-class MulticityInputState extends State<MulticityInput>
+class CritereAllerState extends State<CritereAller>
     with TickerProviderStateMixin {
   AnimationController textInputAnimationController;
 TextEditingController depart=new TextEditingController(),
 arrive=new TextEditingController(),
-datedep=new TextEditingController(),
-nbrePassager=new TextEditingController()
+datedep=new TextEditingController()
 ;
+final f=new DateFormat('yyyy-MM-dd');
 DateTime date=DateTime.now();
 void getData(){
   CritereSelect.arrive=arrive.text;
   CritereSelect.depart=depart.text;
-  CritereSelect.nbrePassager=nbrePassager.text;
-  CritereSelect.datedep=date.toString();
+  CritereSelect.datedep=f.format(date).toString();
 
 }
 Future<Null> _selectDate(BuildContext context) async{
@@ -36,7 +36,7 @@ Future<Null> _selectDate(BuildContext context) async{
                   );
                   setState(() {
                    date =picked;
-                   CritereSelect.datedep=date.toString();
+                   CritereSelect.datedep=f.format(date).toString();
                   });
 }
 
@@ -66,7 +66,7 @@ Future<Null> _selectDate(BuildContext context) async{
                 controller: depart,
                 decoration: InputDecoration(
                   icon: Icon(Icons.flight_takeoff, color: Colors.red),
-                  labelText: "From",
+                  labelText: "Depart",
                 ),
                 onChanged:(text){
                   getData();
@@ -79,20 +79,7 @@ Future<Null> _selectDate(BuildContext context) async{
                 controller: arrive,
                 decoration: InputDecoration(
                   icon: Icon(Icons.flight_land, color: Colors.red),
-                  labelText: "To",
-                ),
-                onChanged:(text){
-                  getData();
-                }
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-              child: TextField(
-                controller: nbrePassager,
-                decoration: InputDecoration(
-                  icon: Icon(Icons.person, color: Colors.red),
-                  labelText: "Passengers",
+                  labelText: "Destination",
                 ),
                 onChanged:(text){
                   getData();
@@ -113,7 +100,7 @@ Future<Null> _selectDate(BuildContext context) async{
                      controller: datedep,
                      decoration: InputDecoration(
                        //icon: Icon(Icons.date_range,color: Colors.grey,),
-                       hintText: 'Date de Naissance:\n'+date.toString(),
+                       hintText: 'Date Depart :\n'+f.format(date).toString(),
                        
                      ),
                      onTap:(){_selectDate(context);
@@ -136,6 +123,23 @@ Future<Null> _selectDate(BuildContext context) async{
                 // ),
               ],
             ),
+            Expanded(child: Container()),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
+          child: FloatingActionButton(
+            onPressed: () {
+              CritereSelect.course=1;
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      GetHoraireAller()));
+              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+              //     builder: (BuildContext context) =>
+              //         FlightListScreen(fullName: nameController.text,catEngin:CritereSelect.refCatEngin,arrive:CritereSelect.arrive,depart: CritereSelect.depart,datedep: CritereSelect.datedep,)));
+              
+            },
+            child: Icon(Icons.timeline, size: 36.0),
+          ),
+        ),
           ],
         ),
       ),

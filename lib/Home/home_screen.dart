@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:flights_app/MyClasses/clsCritereSelect.dart';
+import 'package:flights_app/MyClasses/pub.dart';
+import 'package:flights_app/MyDesigns/tab_aller_retour.dart';
 import 'package:flights_app/home_page.dart';
 import 'package:flights_app/myCompteMoney/colored_card_page.dart';
 import 'package:flights_app/myCompteMoney/custom_gift_card.dart';
@@ -252,13 +255,13 @@ class HomeScreen extends State<MyHomePageScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(height: 110),
+                    SizedBox(height: 100),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.60,
                       child: buildGrid(context),
                     ),
                     SizedBox(
-                      height: 12,
+                      height: 10,
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -291,13 +294,13 @@ class HomeScreen extends State<MyHomePageScreen> {
       shrinkWrap: true,
       childAspectRatio: (MediaQuery.of(context).size.width - 60 / 2) / 300,
       children: <Widget>[
-        buildTile(context, 0, "TAXI", null, Icons.directions_car, "O items",
+        buildTile(context, 0, "BATEAU", null, Icons.directions_boat, "O items",
             Colors.orange, Colors.orange[50]),
         buildTile(context, 1, "BUS", null, Icons.directions_bus, "O items",
             Colors.blue, Colors.blue[50]),
-        buildTile(context, 2, "BATEAU", null, Icons.directions_boat, "0 items",
+        buildTile(context, 2, "AVION", null, Icons.local_airport, "0 items",
             Colors.purple, Colors.purple[50]),
-        buildTile(context, 3, "AVION", null, Icons.local_airport, "0 items",
+        buildTile(context, 3, "TAXI", null, Icons.local_taxi, "0 items",
             Colors.red, Colors.red[50]),
       ],
     );
@@ -321,8 +324,24 @@ class HomeScreen extends State<MyHomePageScreen> {
           setState(() {
             _selectedIndex = index;
             if (_selectedIndex == 0) {
+              CritereSelect.refCatEngin=1;
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => HomePage()));
+                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
+            }
+            else if (_selectedIndex == 1) {
+              CritereSelect.refCatEngin=2;
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
+            }
+            else if (_selectedIndex == 2) {
+              CritereSelect.refCatEngin=3;
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
+            }
+            else if (_selectedIndex == 3) {
+              CritereSelect.refCatEngin=4;
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
             }
           });
           print("tapped");
