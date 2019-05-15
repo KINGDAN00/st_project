@@ -49,6 +49,7 @@ class _GetHoraireAllerState extends State<GetHoraireAller> {
   _agenceID.clear();
   _horaireID.clear();
       //clearItems();
+      if(mounted){
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
           var depart = datauser[h]['LieuDepart'].toString();
@@ -68,7 +69,7 @@ class _GetHoraireAllerState extends State<GetHoraireAller> {
   _agenceID.add(idAgence);
   _horaireID.add(idHoraire);
         }
-      });
+      });}
     }
     return datauser;
   }
@@ -79,12 +80,12 @@ class _GetHoraireAllerState extends State<GetHoraireAller> {
 
   return ListView.builder(itemBuilder: (context,index){
                     return Padding(
-                      padding: const EdgeInsets.only(top:8.0),
+                      padding: const EdgeInsets.only(bottom:8.0),
                       child: 
                           Row(
                             children: <Widget>[
                               Expanded(
-                                child: Text('${Detail.designClasse[index]}'),
+                                child: Text('${Detail.designClasse[index]}',textAlign: TextAlign.center,),
                               ),
                               
                               Expanded(
@@ -118,6 +119,7 @@ Future<List> _chargerDetail(var refEngin1) async {
       Detail.designClasse.clear();
       Detail.prixClasse.clear();
       //clearItems();
+      if(mounted)
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
           var designation = datauser[h]['designationClasse'].toString();
@@ -139,7 +141,7 @@ Future<List> _chargerDetail(var refEngin1) async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${CritereSelect.depart} --> ${CritereSelect.arrive}\n ${CritereSelect.datedep}",
+        title: Text("${CritereSelect.depart} -> ${CritereSelect.arrive}\n ${CritereSelect.datedep}",
         style: TextStyle(fontSize: 14.0),),
       ),
       body: ListView.builder(itemBuilder: (context, index) {
@@ -168,56 +170,55 @@ Future<List> _chargerDetail(var refEngin1) async {
         );
       },
           child:
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical:20.0),
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical:15.0),
          child:
-                Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    Column(
                       children: <Widget>[
-                        Expanded(
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Expanded(
       child: Column(
         children: <Widget>[
-          Text('${_depAller[index]}', style: TextStyle(fontSize: 16.0),),
-          SizedBox(height: 8.0,),
-          Text('${_heureDepAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 16.0),)
+              Text('${_depAller[index]}', style: TextStyle(fontSize: 16.0),),
+              SizedBox(height: 8.0,),
+              Text('${_heureDepAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 16.0),)
         ],
       ),
     ),
-                        Text("--->"),
+    Icon(Icons.navigate_next),
+                            //Text("--->"),
 Expanded(
       child: Column(
         children: <Widget>[
-          
-          Text('${_arriveAller[index]}', style: TextStyle(fontSize: 16.0),),
-          SizedBox(height: 8.0,),
-          Text('${_heureArriveAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 16.0),)
+              
+              Text('${_arriveAller[index]}', style: TextStyle(fontSize: 16.0),),
+              SizedBox(height: 8.0,),
+              Text('${_heureArriveAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 16.0),)
         ],
       ),
     ),
 
+                          ],
+                        ),
+                        ListTile(
+                          title: Text("${_enginAller[index]}",style: TextStyle(color: Colors.red),),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blue
+                          ),
+                        )
                       ],
-                    ),
-                    ListTile(
-                      title: Text("${_enginAller[index]}"),
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.white,
-                      ),
-                    )
-                  ],
-                ),),
-                
-          ),
-        ),
-      ),
-      Divider(),
+                    ),),
+            Divider(color: Colors.blue,),
       Row(
                             children: <Widget>[
                               Expanded(
-                                child: Text('Class'),
+                                child: Text('Class',textAlign: TextAlign.center,),
                               ),
                               Expanded(
                                 child:Text("Prix",textAlign: TextAlign.center,), 
@@ -225,9 +226,17 @@ Expanded(
                               
                             ],
                           ),
-                          Divider(),
+                          Divider(color: Colors.blue,),
               //Text('Entete $index',style: Theme.of(context).textTheme.body2),
               maListeDetail(context, _idEngin[index]),
+            
+            ],
+          ),
+                
+          ),
+        ),
+      ),
+      
               
             ],
           ),

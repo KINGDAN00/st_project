@@ -21,7 +21,7 @@ DateTime date=DateTime.now();
 void getData(){
   CritereSelect.arrive=arrive.text;
   CritereSelect.depart=depart.text;
-  CritereSelect.nbrePassager=nbrePassager.text;
+  CritereSelect.nbrePassager=int.parse(nbrePassager.text);
   CritereSelect.datedep=date.toString();
 
 }

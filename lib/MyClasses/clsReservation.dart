@@ -1,6 +1,8 @@
 
+import 'package:flights_app/MyClasses/pub.dart';
+
 class ClsReservation{
-   static String refCompte='-1',refAgence,refHoraire,refDetailEngin;
+   static String refCompte=PubCon.userId,refAgence,refHoraire,refDetailEngin;
    static String dateVoyage;
    static String idEnginToSelect;
    static int idReservation;

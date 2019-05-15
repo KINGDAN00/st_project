@@ -17,34 +17,38 @@ class _MyFactureState extends State<MyFacture> {
     super.initState();
     _chargerModePay();
     _getMontantTot();
-    //_view.sort();
-    
   }
 
   var _designMode = [""];
-   var _montanPay = [""];
+  var _montanPay = [""];
   Future<List> _getMontantTot() async {
-    final response =
-        await http.post(PubCon.cheminPhp + "GetTotalPaie.php", body: {
-          "refRservation": ClsReservation.idReservation.toString()
-    });
-    //print(response.body);
+    final response = await http.post(PubCon.cheminPhp + "GetTotalPaie.php",
+        body: {
+          "refReservation":'${ClsReservation.idReservation}'
+          });
+    print(response.body);
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
-      
     } else {
       _montanPay.clear();
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
           _montanPay.add(datauser[h]['MontantTotal'].toString());
         }
+        if(ClsReservation.idReservation2!=null){
+          cMontantTotal.text='${(double.parse(_montanPay[0]))*2} \$';
+        }else{
+          cMontantTotal.text='${_montanPay[0]} \$';
+        }
+        
       });
     }
     return datauser;
   }
+
   Future<List> _chargerModePay() async {
-    final response = await http.post(PubCon.cheminPhp + "GetmodePaiement.php",
-        body: {});
+    final response =
+        await http.post(PubCon.cheminPhp + "GetmodePaiement.php", body: {});
     //print(response.body);
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
@@ -64,13 +68,12 @@ class _MyFactureState extends State<MyFacture> {
 
   //fx insertReservation
   //create listView MontantPay
-   Widget _createListView() {
+  Widget _createListView() {
     return new Flexible(
       child: new ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        //itemCount: _designMode.length == null ? 0 : _designMode.length,
-        itemCount: 2,
+        itemCount: _designMode.length == null ? 0 : _designMode.length,
         itemBuilder: (BuildContext context, int index) {
           //return new Text(_view[index]);
           return Card(
@@ -80,9 +83,7 @@ class _MyFactureState extends State<MyFacture> {
               children: <Widget>[
                 ListTile(
                   title: Text('${_designMode[index]}'),
-                  onTap: () {
-                    
-                  },
+                  onTap: () {},
                 ),
               ],
             ),
@@ -92,34 +93,34 @@ class _MyFactureState extends State<MyFacture> {
     );
   }
 
-//create a list Widget
-  Widget _createListViewTot() {
-    return new Flexible(
-      child: new ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        //itemCount: _designMode.length == null ? 0 : _designMode.length,
-        itemCount: 2,
-        itemBuilder: (BuildContext context, int index) {
-          //return new Text(_view[index]);
-          return Card(
-            color: Colors.white,
-            elevation: 5.0,
-            child: new Column(
-              children: <Widget>[
-                ListTile(
-                  title: Text('${_montanPay[index]}'),
-                  onTap: () {
-                    
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
+// //create a list Widget
+//   Widget _createListViewTot() {
+//     return new Flexible(
+//       child: new ListView.builder(
+//         scrollDirection: Axis.vertical,
+
+//         shrinkWrap: true,
+
+//         itemCount: _montanPay.length == null ? 0 : _montanPay.length,
+//         itemBuilder: (BuildContext context, int index) {
+//           //return new Text(_view[index]);
+
+//           return Card(
+//             color: Colors.white,
+//             elevation: 5.0,
+//             child: new Column(
+//               children: <Widget>[
+//                 ListTile(
+//                   title: Text('${_montanPay[index]} \$'),
+//                   onTap: () {},
+//                 ),
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -142,15 +143,17 @@ class _MyFactureState extends State<MyFacture> {
                 Expanded(
                   child: TextField(
                     textAlign: TextAlign.center,
-                    style:TextStyle(fontStyle: FontStyle.normal,color: Colors.red,fontSize: 30.0) ,
+                    style: TextStyle(
+                        fontStyle: FontStyle.normal,
+                        color: Colors.red,
+                        fontSize: 30.0),
                     enabled: false,
                     keyboardType: TextInputType.number,
                     focusNode: FocusNode(),
                     maxLines: 1,
                     controller: cMontantTotal,
                     decoration: new InputDecoration(
-                        labelText:
-                            "Montant TOTAL :",
+                        labelText: "Montant TOTAL :",
                         hintText: "",
                         border: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(20.0))),
@@ -159,9 +162,11 @@ class _MyFactureState extends State<MyFacture> {
               ],
             ),
           ),
-          Divider(color: Colors.red,),
+          Divider(
+            color: Colors.red,
+          ),
 //Chargement des classes ici
-          _createListViewTot(),
+         // _createListViewTot(),
           _createListView(),
         ],
       ),

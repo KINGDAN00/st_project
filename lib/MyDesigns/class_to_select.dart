@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
 import 'package:flights_app/MyClasses/clsReservation.dart';
-import 'package:flights_app/MyClasses/components.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/identite_passager.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +35,29 @@ class _MyClassesState extends State<MyClasses> {
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
     } else {
+      if(mounted)
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
          
-          ClsReservation.idReservation =datauser[h]['IdEncours'].toString() == null ? 1 : 1+int.parse(datauser[h]['IdEncours'].toString());
+          ClsReservation.idReservation =datauser[h]['IdEncours'].toString() == null ? 0 : int.parse(datauser[h]['IdEncours'].toString());
+        }
+      });
+    }
+    return datauser;
+  }
+  Future<List> _getCode2() async {
+    final response =
+        await http.post(PubCon.cheminPhp + "GetidEncours.php", body: {
+    });
+    //print(response.body);
+    var datauser = json.decode(response.body);
+    if (datauser.length == 0) {
+    } else {
+      if(mounted)
+      setState(() {
+        for (int h = 0; h < datauser.length; h++) {
+         
+          ClsReservation.idReservation2 =datauser[h]['IdEncours'].toString() == null ? 0 : int.parse(datauser[h]['IdEncours'].toString());
         }
       });
     }
@@ -57,6 +75,7 @@ class _MyClassesState extends State<MyClasses> {
       _prixClasse.clear();
       _detailID.clear();
       //clearItems();
+      if(mounted)
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
           var designation = datauser[h]['designationClasse'].toString();
@@ -72,7 +91,7 @@ class _MyClassesState extends State<MyClasses> {
   }
 
   //fx insertReservation
-  Future addReservation() async {
+  Future addReservation(int course) async {
     var uri = Uri.parse(PubCon.cheminPhp + "insertReservation.php");
     var request = new http.MultipartRequest("POST", uri);
     request.fields['refCompte'] = ClsReservation.refCompte;
@@ -82,11 +101,12 @@ class _MyClassesState extends State<MyClasses> {
     request.fields['dateVoyage'] = ClsReservation.dateVoyage;
     var response = await request.send();
     if (response.statusCode == 200) {
-      _getCode();
+      if(course==1)_getCode();
+      else if(course==2) _getCode2();
       print("Enregistrement reussi ${ClsReservation.idReservation}");
       Fluttertoast.showToast(msg:'Enregistré',toastLength:Toast.LENGTH_SHORT,
                               backgroundColor:Colors.white,textColor:Colors.black);
-                      Navigator.of(context).push(MaterialPageRoute(
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (BuildContext context) =>
                               IdentitePassager()));
       
@@ -120,15 +140,15 @@ class _MyClassesState extends State<MyClasses> {
                     if (CritereSelect.course == 1) {
                       ClsReservation.dateVoyage = CritereSelect.datedep.toString();
                       //appel fx insert Reservation
-                      addReservation();
+                      addReservation(1);
                       
                     } else if (CritereSelect.course == 2) {
                       ClsReservation.dateVoyage = CritereSelect.datedep;
                       //appel fx insert Reservation
-                      addReservation();
+                      addReservation(1);
                       ClsReservation.dateVoyage = CritereSelect.dateRet;
                       //appel fx insert Reservation
-                      addReservation();
+                      addReservation(2);
                       //passer a l'identification des passagers
                     }
                   },
@@ -164,14 +184,21 @@ class _MyClassesState extends State<MyClasses> {
                   child: TextField(
                     keyboardType: TextInputType.number,
                     focusNode: FocusNode(),
-                    maxLines: 1,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
                     controller: cNbrePlace,
                     decoration: new InputDecoration(
                         labelText:
                             "Nombre de Places\n precisez le nombre des passagers ici:",
                         hintText: "Preciser le nombre de place ici",
                         border: new OutlineInputBorder(
-                            borderRadius: new BorderRadius.circular(20.0))),
+                            borderRadius: new BorderRadius.circular(20.0))
+                            ),
+                            onChanged: (text){
+                              setState(() {
+                               CritereSelect.nbrePassager=int.parse(text); 
+                              });
+                            },
                   ),
                 ),
               ],

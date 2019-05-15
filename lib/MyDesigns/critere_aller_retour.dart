@@ -1,4 +1,6 @@
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
+import 'package:flights_app/MyClasses/components.dart';
+import 'package:flights_app/MyDesigns/DialogComponents/lieu_to_select.dart';
 import 'package:flights_app/MyDesigns/res_aller_retour.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -20,13 +22,30 @@ datedep=new TextEditingController()
 final f=new DateFormat('yyyy-MM-dd');
 DateTime date1=DateTime.now();
 DateTime date2=DateTime.now();
-void getData(){
-  CritereSelect.arrive=arrive.text;
-  CritereSelect.depart=depart.text;
-  CritereSelect.datedep=f.format(date1).toString();
-  CritereSelect.dateRet=f.format(date2).toString();
+// void getData(){
+//   CritereSelect.arrive=arrive.text;
+//   CritereSelect.depart=depart.text;
+//   CritereSelect.datedep=f.format(date1).toString();
+//   CritereSelect.dateRet=f.format(date2).toString();
 
-}
+// }
+void showMyDialog(String title) {
+                      showDialog(
+                    context: context,
+                    builder: (context) => new AlertDialog(
+                          title: new Text("$title",textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.blue,
+                              )),
+                          content:
+                              new Container(
+                                  height: MediaQuery.of(context).size.height, 
+                                  width: MediaQuery.of(context).size.width,
+                                  child: LieuSelect()),
+                           
+                        ));
+                    }
+
 Future<Null> _selectDate1(BuildContext context) async{
   final DateTime picked = await
   showDatePicker(
@@ -38,7 +57,7 @@ Future<Null> _selectDate1(BuildContext context) async{
                   );
                   setState(() {
                    date1 =picked;
-                   CritereSelect.datedep=date1.toString();
+                   CritereSelect.datedep=date1==null? '':f.format(date1).toString();
                   });
 }
 Future<Null> _selectDate2(BuildContext context) async{
@@ -52,7 +71,7 @@ Future<Null> _selectDate2(BuildContext context) async{
                   );
                   setState(() {
                    date2 =picked;
-                   CritereSelect.dateRet=date2.toString();
+                   CritereSelect.dateRet=date2==null? '':f.format(date2).toString();
                   });
 }
 
@@ -79,27 +98,39 @@ Future<Null> _selectDate2(BuildContext context) async{
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
               child: TextField(
+                maxLines: 2,
                 controller: depart,
                 decoration: InputDecoration(
-                  icon: Icon(Icons.flight_takeoff, color: Colors.red),
-                  labelText: "Depart",
+                  icon: Componentss.iconaddcons(context),
+                  //labelText: "Depart",
+                  hintText: 'Depart:\n'+CritereSelect.depart.toString()
                 ),
+                onTap: (){
+                  CritereSelect.est_Depart_Ou_Arrive=1;
+                  showMyDialog("Depart");
+                },
                 onChanged:(text){
-                  getData();
+                  //getData();
                 }
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
               child: TextField(
+                maxLines: 2,
                 controller: arrive,
                 decoration: InputDecoration(
-                  icon: Icon(Icons.flight_land, color: Colors.red),
-                  labelText: "Destination",
+                  //icon: Icon(Icons.flight_land, color: Colors.blue),
+                  icon: Componentss.iconaddcons(context),
+                  //labelText: "Destination",
+                  hintText: 'destination:\n ${CritereSelect.arrive}'
                 ),
                 onChanged:(text){
-                  getData();
-                }
+                },
+                onTap: (){
+                  CritereSelect.est_Depart_Ou_Arrive=2;
+                  showMyDialog('Destination');
+                },
               ),
             ),
             
@@ -107,7 +138,7 @@ Future<Null> _selectDate2(BuildContext context) async{
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(right: 16.0),
-                  child: Icon(Icons.date_range, color: Colors.red),
+                  child: Icon(Icons.date_range, color: Colors.blue),
                 ),
                 Expanded(
                   child: Padding(
@@ -117,14 +148,13 @@ Future<Null> _selectDate2(BuildContext context) async{
                      controller: datedep,
                      decoration: InputDecoration(
                        //icon: Icon(Icons.date_range,color: Colors.grey,),
-                       hintText: 'Date Aller :\n'+f.format(date1).toString(),
+                       hintText: 'Date Aller :\n'+(date1==null? '':f.format(date1).toString()),
                        
                      ),
                      onTap:(){_selectDate1(context);
-                  getData();
                 
                      },
-                     onChanged:(text){getData();},
+                     onChanged:(text){},
                     ),
                   ),
                 ),
@@ -136,14 +166,13 @@ Future<Null> _selectDate2(BuildContext context) async{
                      controller: datedep,
                      decoration: InputDecoration(
                        //icon: Icon(Icons.date_range,color: Colors.grey,),
-                       hintText: 'Date Retour :\n'+f.format(date2).toString(),
+                       hintText: 'Date Retour :\n'+(date2==null? '':f.format(date2).toString()),
                        
                      ),
                      onTap:(){_selectDate2(context);
-                  getData();
                 
                      },
-                     onChanged:(text){getData();},
+                     onChanged:(text){},
                     ),
                   ),
                 ),

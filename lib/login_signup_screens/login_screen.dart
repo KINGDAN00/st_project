@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flights_app/Home/home_screen.dart';
+import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/login_signup_screens/otp_login.dart';
 import 'package:flights_app/login_signup_screens/signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,6 +20,43 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email;
   String _password;
+  TextEditingController user = new TextEditingController();
+  TextEditingController pass = new TextEditingController();
+  Future<List> _login() async {
+    final response = await http.post(PubCon.cheminPhp + "login.php",
+        body: {"usernameClient": user.text, "passwordClient": pass.text});
+    //print(response.body);
+    var datauser = json.decode(response.body);
+    if (datauser.length == 0) {
+      Fluttertoast.showToast(
+          msg: 'Echec de connexion',
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.white,
+          textColor: Colors.red);
+    } else {
+      // if(datauser[0]['privilegeuser']=='Adm'){
+      //   Navigator.pushReplacementNamed(context, '/admin_page');
+      // }else if(datauser[0]['privilegeuser']=='SA'){
+      //   Navigator.pushReplacementNamed(context, '/member_page');
+      // }
+      Fluttertoast.showToast(
+          msg: 'connexion réussie avec succès',
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      setState(() {
+        PubCon.userId = datauser[0]['codeCompte'];
+        PubCon.userNomComplet = datauser[0]['nomClient'];
+        PubCon.userPass = datauser[0]['passwordClient'];
+        PubCon.userName = datauser[0]['usernameClient'];
+        PubCon.userPrivilege = datauser[0]['privilegeClient'];
+        PubCon.userImage = datauser[0]['photoClient'];
+      });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MyHomePageScreen()));
+    }
+    return datauser;
+  }
 
   @override
   void initState() {
@@ -144,16 +187,41 @@ class _LoginScreenState extends State<LoginScreen> {
                 autovalidate: _autoValidate,
                 child: ListView(
                   children: <Widget>[
+                    // TextFormField(
+                    //   validator: validateEmail,
+                    //   onSaved: (String val) {
+                    //     _email = val;
+                    //   },
+                    //   keyboardType: TextInputType.emailAddress,
+                    //   style: TextStyle(fontSize: 16, color: Colors.black),
+                    //   textInputAction: TextInputAction.next,
+                    //   decoration: InputDecoration(
+                    //     labelText: "Email",
+                    //     contentPadding: new EdgeInsets.symmetric(
+                    //         vertical:
+                    //             MediaQuery.of(context).size.height * 0.022,
+                    //         horizontal: 15.0),
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.all(Radius.circular(25)),
+                    //     ),
+                    //   ),
+                    //   onFieldSubmitted: (String value) {
+                    //     FocusScope.of(context).requestFocus(myFocusNode);
+                    //   },
+                    // ),
                     TextFormField(
-                      validator: validateEmail,
-                      onSaved: (String val) {
-                        _email = val;
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Entrez votre username ';
+                        }
                       },
-                      keyboardType: TextInputType.emailAddress,
+                      obscureText: false,
+                      controller: user,
+                      keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: "Email",
+                        labelText: "Username *",
                         contentPadding: new EdgeInsets.symmetric(
                             vertical:
                                 MediaQuery.of(context).size.height * 0.022,
@@ -162,9 +230,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
                       ),
-                      onFieldSubmitted: (String value) {
-                        FocusScope.of(context).requestFocus(myFocusNode);
-                      },
                     ),
                     SizedBox(
                       height: 10,
@@ -176,6 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       focusNode: myFocusNode,
                       obscureText: true,
+                      controller: pass,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       textInputAction: TextInputAction.done,
@@ -219,13 +285,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: GestureDetector(
                           onTap: () {
                             print("pressed");
-                            _validateInputs();
+                            _login();
+                           // _validateInputs();
                             if (_autoValidate) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          MyHomePageScreen()));
+                              
+                              //======================================================
                             }
                           },
                           child: Container(
@@ -246,81 +310,81 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       height: 15,
                     ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Connect with",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(left: 7),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                width:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                decoration: BoxDecoration(
-                                    color: Colors.blue[900],
-                                    shape: BoxShape.circle),
-                                child: Center(
-                                  child: Image.asset(
-                                    "assets/facebook.png",
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 7),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                width:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                decoration: BoxDecoration(
-                                    color: Colors.red, shape: BoxShape.circle),
-                                child: Image.asset(
-                                  "assets/google.png",
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 7),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                width:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                decoration: BoxDecoration(
-                                    color: Colors.lightBlue[400],
-                                    shape: BoxShape.circle),
-                                child: Image.asset(
-                                  "assets/twitter.png",
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 7),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                width:
-                                    MediaQuery.of(context).size.height * 0.065,
-                                decoration: BoxDecoration(
-                                    color: Colors.lightBlue[800],
-                                    shape: BoxShape.circle),
-                                child: Image.asset(
-                                  "assets/linkedin.png",
-                                  color: Colors.white,
-                                ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: <Widget>[
+                    //       Text(
+                    //         "Connect with",
+                    //         style: TextStyle(
+                    //             fontSize: 14, fontWeight: FontWeight.bold),
+                    //       ),
+                    //       Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //         crossAxisAlignment: CrossAxisAlignment.center,
+                    //         children: <Widget>[
+                    //           Container(
+                    //             margin: EdgeInsets.only(left: 7),
+                    //             height:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             width:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             decoration: BoxDecoration(
+                    //                 color: Colors.blue[900],
+                    //                 shape: BoxShape.circle),
+                    //             child: Center(
+                    //               child: Image.asset(
+                    //                 "assets/facebook.png",
+                    //                 color: Colors.white,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           Container(
+                    //             margin: EdgeInsets.only(left: 7),
+                    //             height:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             width:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             decoration: BoxDecoration(
+                    //                 color: Colors.red, shape: BoxShape.circle),
+                    //             child: Image.asset(
+                    //               "assets/google.png",
+                    //               color: Colors.white,
+                    //             ),
+                    //           ),
+                    //           Container(
+                    //             margin: EdgeInsets.only(left: 7),
+                    //             height:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             width:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             decoration: BoxDecoration(
+                    //                 color: Colors.lightBlue[400],
+                    //                 shape: BoxShape.circle),
+                    //             child: Image.asset(
+                    //               "assets/twitter.png",
+                    //               color: Colors.white,
+                    //             ),
+                    //           ),
+                    //           Container(
+                    //             margin: EdgeInsets.only(left: 7),
+                    //             height:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             width:
+                    //                 MediaQuery.of(context).size.height * 0.065,
+                    //             decoration: BoxDecoration(
+                    //                 color: Colors.lightBlue[800],
+                    //                 shape: BoxShape.circle),
+                    //             child: Image.asset(
+                    //               "assets/linkedin.png",
+                    //               color: Colors.white,
+                    //             ),
+                    //           )
+                    //         ],
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
                     Container(
                         margin: EdgeInsets.only(top: 10, bottom: 15),
                         height: MediaQuery.of(context).size.height * 0.05,

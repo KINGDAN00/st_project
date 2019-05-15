@@ -4,6 +4,7 @@ import 'package:flights_app/MyClasses/clsCritereSelect.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/tab_aller_retour.dart';
 import 'package:flights_app/home_page.dart';
+import 'package:flights_app/login_signup_screens/login_screen.dart';
 import 'package:flights_app/myCompteMoney/colored_card_page.dart';
 import 'package:flights_app/myCompteMoney/custom_gift_card.dart';
 import 'package:flights_app/login_signup_screens/profile.dart';
@@ -95,11 +96,14 @@ class HomeScreen extends State<MyHomePageScreen> {
           child: new ListView(
             children: <Widget>[
               new UserAccountsDrawerHeader(
-                accountName: new Text('Email'),
-                accountEmail: new Text('danamphred@gmail.com'),
+                accountName: new Text('${PubCon.userName}'),
+                accountEmail: new Text('${PubCon.userNomComplet}'),
                 currentAccountPicture: new GestureDetector(
                   child: new CircleAvatar(
                     backgroundColor: Colors.lightBlue,
+                    // backgroundImage: new NetworkImage(PubCon.userImage == ''
+                    //         ? null
+                    //         : PubCon.cheminPhp + PubCon.userImage),
                     child: new Icon(
                       Icons.person,
                       color: Colors.white,
@@ -220,7 +224,13 @@ class HomeScreen extends State<MyHomePageScreen> {
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                          fullscreenDialog: true));
+                },
                 child: new ListTile(
                   title: new Text(
                     'Connexion',

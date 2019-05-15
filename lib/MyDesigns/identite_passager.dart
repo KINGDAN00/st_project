@@ -1,4 +1,5 @@
 
+import 'package:flights_app/MyClasses/clsCritereSelect.dart';
 import 'package:flights_app/MyClasses/clsReservation.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/facture_page.dart';
@@ -26,30 +27,15 @@ cContactPhone=new TextEditingController(),
 cContactMail=new TextEditingController(),
 cCodePostal=new TextEditingController(),
 cNationnalite=new TextEditingController(),
-cNumeroPassport=new TextEditingController(),
-cDateExp=new TextEditingController(),
 cDateNaiss=new TextEditingController()
 ;
 final f=new DateFormat('yyyy-MM-dd');
 DateTime dateNaiss=DateTime.now();
 DateTime dateExp=DateTime.now();
 final List<String> _items = ['M', 'F'].toList();
-
+int compteur=0;
   String _selection;
 Future<Null> _selectDateNaiss(BuildContext context) async{
-  final DateTime picked = await
-  showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime(2099),
-
-                  );
-                  setState(() {
-                   dateNaiss =picked;
-                  });
-}
-Future<Null> _selectDateExp(BuildContext context) async{
   final DateTime picked = await
   showDatePicker(
                     context: context,
@@ -81,16 +67,12 @@ void innitialiser(){
   cNom.text="";
   cPrenom.text="";
   cDateNaiss.text="";
-  cDateExp.text="";
   cAdresse.text="";
   cContactMail.text="";
   cContactPhone.text="";
-  cCodePostal.text="";
-  cNationnalite.text="";
-  cNumeroPassport.text="";
 }
 //INSERTION IDENTITE DU PASSAGER
-Future saveUser() async {
+Future saveUser(int idReservation) async {
     var uri = Uri.parse(PubCon.cheminPhp + "insertDetailReservation.php");
     var request = new http.MultipartRequest("POST", uri);
     request.fields['nomClient_billet'] = cNom.text;
@@ -99,12 +81,8 @@ Future saveUser() async {
     request.fields['dateNaissance'] =dateNaiss.toString() ;
     request.fields['adresseClient_billet'] = cAdresse.text;
     request.fields['contactClient_billet'] = cContactPhone.text;
-    request.fields['refRservation'] = '${ClsReservation.idReservation}';
+    request.fields['refRservation'] = '$idReservation';
     request.fields['Mail_client'] = cContactMail.text;
-    request.fields['codePostal_client'] = cCodePostal.text;
-    request.fields['Nationnalite_client'] = cNationnalite.text;
-    request.fields['NumeroPasseport'] = cNumeroPassport.text;
-    request.fields['DateExpirationPassport'] = dateExp.toString();
     var response = await request.send();
     if (response.statusCode == 200) {
       print("Enregistrement reussi");
@@ -114,7 +92,7 @@ Future saveUser() async {
       //PubCon.showDialogcz(ctx, "Confirm", "Enregistrement reussi");
     } else {
       print("Echec d'enregistrement");
-      Fluttertoast.showToast(msg:'Echec Enregistremznt',toastLength:Toast.LENGTH_SHORT,
+      Fluttertoast.showToast(msg:'Echec Enregistrement',toastLength:Toast.LENGTH_SHORT,
                               backgroundColor:Colors.white,textColor:Colors.black);
     }
   }
@@ -130,7 +108,7 @@ Future saveUser() async {
     return 
     
     Scaffold(
-      appBar: AppBar(title: Text('Reservation ID. ${ClsReservation.idReservation}'),),
+      appBar: AppBar(title: Text('Passager $compteur/${CritereSelect.nbrePassager}'),),
       body: LayoutBuilder(
             builder:
                 (BuildContext context, BoxConstraints viewportConstraints) {
@@ -153,7 +131,7 @@ Future saveUser() async {
                 child: TextField(
                   controller: cNom,
                   decoration: InputDecoration(
-                    icon: Icon(Icons.text_fields, color: Colors.red),
+                    icon: Icon(Icons.text_fields, color: Colors.blue),
                     labelText: "Nom",
                   ),
                   onChanged:(text){
@@ -165,7 +143,7 @@ Future saveUser() async {
                 child: TextField(
                   controller: cPrenom,
                   decoration: InputDecoration(
-                    icon: Icon(Icons.text_fields, color: Colors.red),
+                    icon: Icon(Icons.text_fields, color: Colors.blue),
                     labelText: "Prenom",
                   )),),
                   Padding(
@@ -181,7 +159,7 @@ Future saveUser() async {
                           decoration: InputDecoration(
                             icon: Icon(
                               Icons.people,
-                              color: Colors.red,
+                              color: Colors.blue,
                             ),
                       //       border: new OutlineInputBorder(
                       //  borderRadius: new BorderRadius.circular(20.0)),
@@ -195,7 +173,7 @@ Future saveUser() async {
                          maxLines: 2,
                        controller: cDateNaiss,
                        decoration: InputDecoration(
-                        icon: Icon(Icons.date_range,color: Colors.red,),
+                        icon: Icon(Icons.date_range,color: Colors.blue,),
                          hintText: 'Date Naissance :\n'+f.format(dateNaiss).toString(),
                          
                        ),
@@ -209,7 +187,7 @@ Future saveUser() async {
                 child: TextField(
                   controller: cAdresse,
                   decoration: InputDecoration(
-                    icon: Icon(Icons.map, color: Colors.red),
+                    icon: Icon(Icons.map, color: Colors.blue),
                     labelText: "Adresse de residence",
                   )),),
                   Padding(
@@ -218,7 +196,7 @@ Future saveUser() async {
                   keyboardType: TextInputType.phone,
                   controller: cContactPhone,
                   decoration: InputDecoration(
-                    icon: Icon(Icons.phone, color: Colors.red),
+                    icon: Icon(Icons.phone, color: Colors.blue),
                     labelText: "Tel.",
                   )),),
                   Padding(
@@ -227,61 +205,35 @@ Future saveUser() async {
                   keyboardType: TextInputType.emailAddress,
                   controller: cContactMail,
                   decoration: InputDecoration(
-                    icon: Icon(Icons.mail, color: Colors.red),
+                    icon: Icon(Icons.mail, color: Colors.blue),
                     labelText: "Mail",
                   )),),
-                  Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-                child: TextField(
-                  controller: cNationnalite,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.location_city, color: Colors.red),
-                    labelText: "Nationalite",
-                  )),),
-                  Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-                child: TextField(
-                  controller: cCodePostal,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.local_post_office, color: Colors.red),
-                    labelText: "Code Postal",
-                  )),),
-                  Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-                child: TextField(
-                  controller: cNumeroPassport,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.card_travel, color: Colors.red),
-                    labelText: "Numero Passport",
-                  )),),
-              Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-                      child: TextField(
-                         maxLines: 2,
-                       controller: cDateExp,
-                       decoration: InputDecoration(
-                        icon: Icon(Icons.date_range,color: Colors.red,),
-                         hintText: 'Date Expiration :\n'+f.format(dateExp).toString(),
-                         
-                       ),
-                       onTap:(){_selectDateExp(context);
-                  
-                       },
-                      ),
-                    ),
               Expanded(child: Container()),
-              Divider(color: Colors.red,),
+              Divider(color: Colors.blue,),
                 Row(
                   children: <Widget>[
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
-                        child: FloatingActionButton(
+                        child: RaisedButton(
                           onPressed: () {
+                            if(CritereSelect.nbrePassager>compteur){
                                    //appel fx d
-                                   saveUser();
+                                   saveUser(ClsReservation.idReservation);
+                                   //meme id pour le retour
+                                   saveUser(ClsReservation.idReservation2);
+                                   if(mounted){
+                                     setState(() {
+                                      compteur++; 
+                                     });
+                                   }
+                          }else{
+                            Fluttertoast.showToast(msg:'Vous avez atteint votre limite de nombre de passager',toastLength:Toast.LENGTH_LONG,
+                              backgroundColor:Colors.white,textColor:Colors.black);
+                          }
                           },
-                          child: Icon(Icons.verified_user, size: 36.0),
+                          child:Text("AJOUTER")
+                          // Icon(Icons.verified_user, size: 36.0),
                         ),
                       ),
                     ),
@@ -289,22 +241,23 @@ Future saveUser() async {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
                         child: RaisedButton(
-                          color: Colors.red,
+                          color: Colors.blue,
                           textColor: Colors.white,
                           onPressed: () {
                                    //___on passe au paiement___
-                                   Navigator.of(context).push(MaterialPageRoute(
+                                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (BuildContext context) =>
                               MyFacture()));
                           },
-                          child: Icon(Icons.navigate_next, size: 36.0),
+                          child: Text("TERMINER")
+                          //Icon(Icons.navigate_next, size: 36.0),
                         ),
                       ),
                     ),
                   ],
                 ),
 
-              Divider(color: Colors.red,),
+              Divider(color: Colors.blue,),
             ],
           ),
         ),

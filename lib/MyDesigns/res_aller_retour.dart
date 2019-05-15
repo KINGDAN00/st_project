@@ -48,6 +48,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
     } else {
       
       clearItems();
+      if(mounted){
             setState(() {
               for (int h = 0; h < datauser.length; h++) {
         _depAller.add(datauser[h]['LieuDepartAller'].toString());
@@ -66,7 +67,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
         _agenceID.add(datauser[h]['codeAgenceAller'].toString());
         _horaireID.add(datauser[h]['codeHoraireAller'].toString());
               }
-            });
+            });}
           }
           return datauser;
         }
@@ -75,12 +76,12 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
          _chargerDetail(refEngin1);
         return ListView.builder(itemBuilder: (context,index){
                           return Padding(
-                            padding: const EdgeInsets.only(top:8.0),
+                            padding: const EdgeInsets.only(bottom:8.0),
                             child: 
                                 Row(
                                   children: <Widget>[
                                     Expanded(
-                                      child: Text('${Detail.designClasse[index]}'),
+                                      child: Text('${Detail.designClasse[index]}',textAlign: TextAlign.center,),
                                     ),
                                     
                                     Expanded(
@@ -137,7 +138,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
             appBar: AppBar(
               // Here we take the value from the MyHomePage object that was created by
               // the App.build method, and use it to set our appbar title.
-              title: Text("${CritereSelect.depart} <--> ${CritereSelect.arrive} \n${CritereSelect.datedep} <--> ${CritereSelect.dateRet}",
+              title: Text("${CritereSelect.depart} <-> ${CritereSelect.arrive} \n${CritereSelect.datedep} <-> ${CritereSelect.dateRet}",
               style: TextStyle(fontSize: 14.0),),
             ),
             body: ListView.builder(itemBuilder: (context, index) {
@@ -167,91 +168,91 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
               );
             },
                 child:
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical:16.0),
-                //   child: ListView(
-                //     children: <Widget>[
-                //       Text(flight.agence, style: TextStyle(
-                //     color: Colors.black,
-                //     fontSize: 40.0,
-                //     fontWeight: FontWeight.bold
-                // ),),
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical:16.0),
+                    //   child: ListView(
+                    //     children: <Widget>[
+                    //       Text(flight.agence, style: TextStyle(
+                    //     color: Colors.black,
+                    //     fontSize: 40.0,
+                    //     fontWeight: FontWeight.bold
+                    // ),),
                child:
-                      Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          Column(
                             children: <Widget>[
-                              Expanded(
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Expanded(
             child: Column(
               children: <Widget>[
-                Text('${_depAller[index]}', style: TextStyle(fontSize: 15.0),),
-                SizedBox(height: 8.0,),
-                Text('${_heureDepAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
+                    Text('${_depAller[index]}', style: TextStyle(fontSize: 15.0),),
+                    SizedBox(height: 8.0,),
+                    Text('${_heureDepAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
               ],
             ),
           ),
-                              Text("--->"),
+          Icon(Icons.navigate_next),
+                                  //Text("--->"),
       Expanded(
             child: Column(
               children: <Widget>[
-                
-                Text('${_arriveAller[index]}', style: TextStyle(fontSize: 15.0),),
-                SizedBox(height: 8.0,),
-                Text('${_heureArriveAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
+                    
+                    Text('${_arriveAller[index]}', style: TextStyle(fontSize: 15.0),),
+                    SizedBox(height: 8.0,),
+                    Text('${_heureArriveAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
               ],
             ),
           ),
       
-                            ],
-                          ),
-                          ListTile(
-                            title: Text("${_enginAller[index]}"),
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
+                                ],
+                              ),
+                              ListTile(
+                                title: Text("${_enginAller[index]}"),
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.blue,
+                                ),
+                              ),
       
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              Expanded(
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Expanded(
             child: Column(
               children: <Widget>[
-                Text('${_arriveRetour[index]}', style: TextStyle(fontSize: 15.0),),
-                SizedBox(height: 8.0,),
-                Text('${_heureArriveRetour[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
+                    Text('${_arriveRetour[index]}', style: TextStyle(fontSize: 15.0),),
+                    SizedBox(height: 8.0,),
+                    Text('${_heureArriveRetour[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
               ],
             ),
           ),
-                              Text("<---"),
+          Icon(Icons.navigate_before),
+                                  //Text("<---"),
       Expanded(
             child: Column(
               children: <Widget>[
-                
-                Text('${_depRetour[index]}', style: TextStyle(fontSize: 15.0),),
-                SizedBox(height: 8.0,),
-                Text('${_heureDepRetour[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
+                    
+                    Text('${_depRetour[index]}', style: TextStyle(fontSize: 15.0),),
+                    SizedBox(height: 8.0,),
+                    Text('${_heureDepRetour[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
               ],
             ),
           ),
       
+                                ],
+                              ),
                             ],
-                          ),
-                        ],
-                      ),),
-                      
-                ),
-              ),
-            ),
-            Divider(),
+                          ),),
+                Divider(color: Colors.blue,),
             Row(
                                   children: <Widget>[
                                     Expanded(
-                                      child: Text('Class'),
+                                      child: Text('Class',textAlign: TextAlign.center,),
                                     ),
                                     Expanded(
                                       child:Text("Prix",textAlign: TextAlign.center,), 
@@ -259,9 +260,19 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
                                     
                                   ],
                                 ),
-                                Divider(),
+                                Divider(color: Colors.blue,),
                     //Text('Entete $index',style: Theme.of(context).textTheme.body2),
                     maListeDetail(context, _idEngin[index])
+
+
+
+                  ],
+                ),
+                      
+                ),
+              ),
+            ),
+            
                   ],
                 ),
               );

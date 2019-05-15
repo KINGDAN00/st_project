@@ -1,4 +1,16 @@
+import 'dart:io';
+import 'package:async/async.dart';
+import 'package:flights_app/MyClasses/pub.dart';
+import 'package:flights_app/login_signup_screens/login_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as Img;
+import 'dart:math' as Math;
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -6,12 +18,44 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+
+TextEditingController cNomsUser = new TextEditingController(),
+      cAddresse = new TextEditingController(),
+      cContact = new TextEditingController(),
+      cUsername = new TextEditingController(),
+      cpassword = new TextEditingController(),
+      cCodePostale = new TextEditingController(),
+      cNationalite= new TextEditingController(),
+      cNumPassport= new TextEditingController(),
+      cdateExp = new TextEditingController();
+DateTime date;
+Future<Null> _selectDate(BuildContext context) async{
+  final DateTime picked = await
+  showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2099),
+
+                  );
+                  setState(() {
+                   date =picked;
+                  });
+}
+
+
+
+
+
+  
+  File _image;
   FocusNode focusNode1;
   FocusNode focusNode2;
   FocusNode focusNode3;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _email;
   String _password;
+
 
   @override
   void initState() {
@@ -143,12 +187,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         return 'Entrez votre nom';
                       }
                     },
-                    obscureText: true,
+                    obscureText: false,
+                    controller: cNomsUser,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Noms",
+                      labelText: "Noms *",
                       contentPadding: new EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.022,
                           horizontal: 15.0),
@@ -169,12 +214,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         return 'Entrez votre Adress';
                       }
                     },
-                    obscureText: true,
+                    obscureText: false,
+                    controller: cAddresse,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Adress phisyque",
+                      labelText: "Adress phisyque *",
                       contentPadding: new EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.022,
                           horizontal: 15.0),
@@ -192,15 +238,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   TextFormField(
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Entrez votre Contact';
+                        return 'Entrez votre Numero';
                       }
                     },
-                    obscureText: true,
-                    keyboardType: TextInputType.text,
+                    obscureText: false,
+                    controller: cContact,
+                    keyboardType: TextInputType.phone,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Contact",
+                      labelText: "Telephone *",
                       contentPadding: new EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.022,
                           horizontal: 15.0),
@@ -218,15 +265,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   TextFormField(
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Entrez votre Date de naissance';
+                        return 'Entrez votre Nationalité ';
                       }
                     },
-                    obscureText: true,
+                    obscureText: false,
+                    controller: cNationalite,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Date de naissance",
+                      labelText: "Nationalité *",
                       contentPadding: new EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.022,
                           horizontal: 15.0),
@@ -242,42 +290,18 @@ class _SignupScreenState extends State<SignupScreen> {
                     height: 10,
                   ),
                   TextFormField(
-                    validator: validateEmail,
-                    onSaved: (String val) {
-                      _email = val;
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Entrez votre username ';
+                      }
                     },
-                    focusNode: focusNode1,
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      contentPadding: new EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.022,
-                          horizontal: 15.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                      ),
-                    ),
-                    onFieldSubmitted: (String value) {
-                      FocusScope.of(context).requestFocus(focusNode2);
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    validator: validatePassword,
-                    onSaved: (String val) {
-                      _password = val;
-                    },
-                    focusNode: focusNode2,
-                    obscureText: true,
+                    obscureText: false,
+                    controller: cUsername,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Password",
+                      labelText: "Username *",
                       contentPadding: new EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.022,
                           horizontal: 15.0),
@@ -286,7 +310,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     onFieldSubmitted: (String value) {
-                      FocusScope.of(context).requestFocus(focusNode3);
+                      FocusScope.of(context).requestFocus(focusNode1);
                     },
                   ),
                   SizedBox(
@@ -299,11 +323,12 @@ class _SignupScreenState extends State<SignupScreen> {
                     },
                     focusNode: focusNode3,
                     obscureText: true,
+                    controller: cpassword,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
-                      labelText: "Confirm Password",
+                      labelText: "Password *",
                       contentPadding: new EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.022,
                           horizontal: 15.0),
@@ -313,13 +338,123 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   SizedBox(
+                    height: 10,
+                  ),
+                  Divider(),
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            RaisedButton(
+                              elevation: 5.0,
+                              color: Colors.white,
+                              child: Icon(
+                                Icons.image,
+                                color: Colors.blue,
+                              ),
+                              onPressed: getImageGallery,
+                            ),
+                            RaisedButton(
+                              elevation: 5.0,
+                              color: Colors.white,
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.blue,
+                              ),
+                              onPressed: getImageCamera,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 100.0,
+                          child: Align(
+                            alignment: Alignment.center,
+                              child: _image == null
+                                  ? new Text(
+                                      "No image selected!",
+                                      textAlign: TextAlign.center,
+                                    )
+                                  : new Image.file(_image,fit:BoxFit.cover,)),
+                        ),
+                      )
+                    ],
+                  ),
+                  Divider(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    obscureText: false,
+                    controller: cCodePostale,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: "Code Postal",
+                      contentPadding: new EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.022,
+                          horizontal: 15.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                      ),
+                    ),
+                    onFieldSubmitted: (String value) {
+                      FocusScope.of(context).requestFocus(focusNode1);
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    obscureText: false,
+                    controller: cNumPassport,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: "Numero Passport",
+                      contentPadding: new EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.022,
+                          horizontal: 15.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                      ),
+                    ),
+                    onFieldSubmitted: (String value) {
+                      FocusScope.of(context).requestFocus(focusNode1);
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    obscureText: false,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: "Date D'expiration du Passport",
+                      hintText: 'Date de Naissance:\n'+date.toString(),
+                      contentPadding: new EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.022,
+                          horizontal: 15.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                      ),
+                    ),
+                    onTap: (){_selectDate(context);}
+                  ),
+                  SizedBox(
                     height: 15,
                   ),
                   Container(
                     child: GestureDetector(
                         onTap: () {
                           print("pressed");
-                          _validateInputs();
+                          _validateInputs(_image, context);
                         },
                         child: Container(
                           height: MediaQuery.of(context).size.height * 0.065,
@@ -368,12 +503,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _value1Changed(bool value) => setState(() => _value1 = value);
 
-  void _validateInputs() {
+  void _validateInputs(File imageFile, BuildContext ctx) {
     if (_formKey.currentState.validate()) {
-//    If all data are correct then save data to out variables
+      //    If all data are correct then save data to out variables
       _formKey.currentState.save();
+      //save user in the database
+      saveUser(imageFile, ctx);
     } else {
-//    If all data are not valid then start auto validation.
+      //    If all data are not valid then start auto validation.
       setState(() {
         _autoValidate = true;
       });
@@ -381,21 +518,97 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
-      return 'Enter Valid Email';
-    else
-      return null;
+    if (!value.isEmpty) {
+      Pattern pattern =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      RegExp regex = new RegExp(pattern);
+      if (!regex.hasMatch(value))
+        return 'Enter Valid Email';
+      else
+        return null;
+    }
   }
 
   String validatePassword(String value) {
-    if (value.length < 6)
-      return 'Password must be atleast 6 digits';
+    if (value.length < 4)
+      return 'Password doit avoir au minimum 4 caracteres';
     else
       return null;
   }
+Future getImageGallery() async{
+var imageFile=await ImagePicker.pickImage(source: ImageSource.gallery);
+
+final tempDir=await getTemporaryDirectory();
+final path=tempDir.path;
+//String title=ctitle.text;
+int rand=new Math.Random().nextInt(1000000);
+Img.Image image=Img.decodeImage(imageFile.readAsBytesSync());
+Img.Image smallerImg=Img.copyResize(image, 500);
+var compressImg=new File("$path/image_$rand.jpg")
+..writeAsBytesSync(Img.encodeJpg(smallerImg,quality: 85));
+
+setState(() {
+ _image=compressImg; 
+});
+}
+Future getImageCamera() async{
+var imageFile=await ImagePicker.pickImage(source: ImageSource.camera);
+final tempDir=await getTemporaryDirectory();
+final path=tempDir.path;
+//String title=ctitle.text;
+int rand=new Math.Random().nextInt(1000000);
+Img.Image image=Img.decodeImage(imageFile.readAsBytesSync());
+Img.Image smallerImg=Img.copyResize(image, 500);
+var compressImg=new File("$path/image_$rand.jpg")
+..writeAsBytesSync(Img.encodeJpg(smallerImg,quality: 85));
+
+setState(() {
+ _image=compressImg; 
+});
+}
+
+//procedure for saving user
+Future saveUser(File imageFile, BuildContext ctx) async {
+    try{
+      var stream =
+        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    var length = await imageFile.length();
+    var uri = Uri.parse(PubCon.cheminPhp + "insertCompte.php");
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile("image", stream, length,
+        filename: basename(imageFile.path));
+    request.fields['nomClient'] = cNomsUser.text;
+    request.fields['adresseClient'] = cAddresse.text;
+    request.fields['contactClient'] = cContact.text;
+    request.fields['passuser'] = cpassword.text;
+    request.fields['usernameClient'] =cUsername.text;
+    request.fields['passwordClient'] =cpassword.text;
+    request.fields['code_postal'] =cCodePostale.text;
+    request.fields['Nationnalite'] =cNationalite.text;
+    request.fields['NumeroPasseport'] =cNumPassport.text;
+    request.fields['DateExpirationPasseport'] = date.toString();
+    request.files.add(multipartFile);
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print("Enregistrement reussi");
+      Fluttertoast.showToast(msg:'Passager Enregistré',toastLength:Toast.LENGTH_SHORT,
+                              backgroundColor:Colors.white,textColor:Colors.black);
+      Navigator.pushReplacement(
+          ctx,
+          MaterialPageRoute(
+              builder: (ctx) => LoginScreen(), fullscreenDialog: true));
+    } else {
+      print("Echec d'enregistrement");
+      Fluttertoast.showToast(msg:'Echec enregistrement',toastLength:Toast.LENGTH_SHORT,
+                              backgroundColor:Colors.white,textColor:Colors.red);
+    }
+    }catch(e){
+      print(e);
+    }
+  }
+
+
+
 }
 
 class RoundedClipper extends CustomClipper<Path> {
