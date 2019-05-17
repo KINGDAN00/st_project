@@ -45,8 +45,8 @@ Future<Null> _selectDate(BuildContext context) async{
   @override
   void initState() {
     super.initState();
-    textInputAnimationController = new AnimationController(
-        vsync: this, duration: Duration(milliseconds: 800));
+    //textInputAnimationController = new AnimationController(
+       // vsync: this, duration: Duration(milliseconds: 800));
   }
 
   @override

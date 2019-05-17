@@ -108,7 +108,23 @@ Future saveUser(int idReservation) async {
     return 
     
     Scaffold(
-      appBar: AppBar(title: Text('Passager $compteur/${CritereSelect.nbrePassager}'),),
+      appBar: AppBar(title: Text('Passager $compteur/${CritereSelect.nbrePassager}'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.skip_next),
+          onPressed: (){
+            
+                                   //___on passe au paiement___
+                                   if(compteur==0)
+                                   Fluttertoast.showToast(msg:'veillez enregistrer vos identités SVP!!!',toastLength:Toast.LENGTH_LONG,
+                              backgroundColor:Colors.white,textColor:Colors.black);
+                              else
+                                   Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              MyFacture()));
+          },
+        )
+      ],),
       body: LayoutBuilder(
             builder:
                 (BuildContext context, BoxConstraints viewportConstraints) {
@@ -227,6 +243,10 @@ Future saveUser(int idReservation) async {
                                       compteur++; 
                                      });
                                    }
+                                   if(compteur>=CritereSelect.nbrePassager)
+                                   Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              MyFacture()));
                           }else{
                             Fluttertoast.showToast(msg:'Vous avez atteint votre limite de nombre de passager',toastLength:Toast.LENGTH_LONG,
                               backgroundColor:Colors.white,textColor:Colors.black);
@@ -237,23 +257,27 @@ Future saveUser(int idReservation) async {
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
-                        child: RaisedButton(
-                          color: Colors.blue,
-                          textColor: Colors.white,
-                          onPressed: () {
-                                   //___on passe au paiement___
-                                   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              MyFacture()));
-                          },
-                          child: Text("TERMINER")
-                          //Icon(Icons.navigate_next, size: 36.0),
-                        ),
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
+                    //     child: RaisedButton(
+                    //       color: Colors.blue,
+                    //       textColor: Colors.white,
+                    //       onPressed: () {
+                    //                //___on passe au paiement___
+                    //                if(compteur==0)
+                    //                Fluttertoast.showToast(msg:'veillez enregistrer vos identités SVP!!!',toastLength:Toast.LENGTH_LONG,
+                    //           backgroundColor:Colors.white,textColor:Colors.black);
+                    //           else
+                    //                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    //       builder: (BuildContext context) =>
+                    //           MyFacture()));
+                    //       },
+                    //       child: Text("TERMINER")
+                    //       //Icon(Icons.navigate_next, size: 36.0),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
 

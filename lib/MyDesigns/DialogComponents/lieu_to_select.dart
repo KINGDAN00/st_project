@@ -28,11 +28,6 @@ Future<List> _chargerLieu() async{
     return datauser;
 }
 
-
-
-
-
-
   //fonction recherche
   var _searchView=new TextEditingController();
   bool _firstSearch=true;
@@ -45,7 +40,7 @@ Future<List> _chargerLieu() async{
   
     _view=[""];
 
-     // _chargerLieu();
+     _chargerLieu();
     //_view.sort();
   }
 
@@ -67,11 +62,12 @@ Future<List> _chargerLieu() async{
   @override
   Widget build(BuildContext context) {
     //getString();
-    return new Container(
-          child: new FutureBuilder<List>(
-              future: _chargerLieu(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
+    // return 
+    // new Container(
+    //       child: new FutureBuilder<List>(
+    //           future: _chargerLieu(),
+    //           builder: (context, snapshot) {
+    //             if (snapshot.hasData) {
                   //List lieuFull = snapshot.data;
 
                   return new Column(
@@ -82,14 +78,14 @@ Future<List> _chargerLieu() async{
         
        ],
     );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                }
+              //   } else if (snapshot.hasError) {
+              //     return Text('${snapshot.error}');
+              //   }
 
-                return Align(
-                  alignment: Alignment.center,
-                  child: new CircularProgressIndicator());
-              }));
+              //   return Align(
+              //     alignment: Alignment.center,
+              //     child: new CircularProgressIndicator());
+              // }));
     
     
     
@@ -122,10 +118,10 @@ Future<List> _chargerLieu() async{
         itemBuilder: (BuildContext context,int index){
           //return new Text(_view[index]);
           return new Card(
-            elevation: 1.0,
+            elevation: 0.5,
             color: Colors.white,
             child:Container(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.only(top: 10.0,bottom: 10.0,left: 20.0),
               margin: EdgeInsets.all(1.0),
               child: new GestureDetector(
                 child: new Text("${lieuFull[index]}"),

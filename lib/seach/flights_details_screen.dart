@@ -1,5 +1,5 @@
 import 'package:flights_app/seach/flight_card.dart';
-import 'package:flights_app/seach/flight_model.dart';
+//import 'package:flights_app/seach/flight_model.dart';
 import 'package:flutter/material.dart';
 
 class FlightDetailScreen extends StatelessWidget{

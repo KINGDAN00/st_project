@@ -1,11 +1,14 @@
-import 'dart:io';
+//import 'dart:io';
 
+import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
 import 'package:flights_app/MyClasses/pub.dart';
+import 'package:flights_app/MyDesigns/Administration/homeAdmin.dart';
+import 'package:flights_app/MyDesigns/colored_card_page.dart';
+import 'package:flights_app/MyDesigns/historiquePast.dart';
 import 'package:flights_app/MyDesigns/tab_aller_retour.dart';
-import 'package:flights_app/home_page.dart';
+//import 'package:flights_app/home_page.dart';
 import 'package:flights_app/login_signup_screens/login_screen.dart';
-import 'package:flights_app/myCompteMoney/colored_card_page.dart';
 import 'package:flights_app/myCompteMoney/custom_gift_card.dart';
 import 'package:flights_app/login_signup_screens/profile.dart';
 //import 'package:flights_app/myCompteMoney/first_page.dart';
@@ -40,27 +43,23 @@ import 'package:flutter/material.dart';
 //}
 ////
 class MyHomePageScreen extends StatefulWidget {
-//  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-//  final String title;
 
   @override
   HomeScreen createState() => HomeScreen();
 }
 
 class HomeScreen extends State<MyHomePageScreen> {
+MyPreferences _myPreferences=MyPreferences();
 
   @override
   Widget build(BuildContext context) {
+    //initialisation par les donnees en memoire
+    PubCon.userId=_myPreferences.iduser==""? '-1' :_myPreferences.iduser;
+    PubCon.userName=_myPreferences.user==""? 'sTicket' : _myPreferences.user;
+PubCon.userNomComplet=_myPreferences.nomcomplet==""?'Smart Ticket':_myPreferences.nomcomplet;
+PubCon.userPass=_myPreferences.password;
+PubCon.userPrivilege=_myPreferences.privilege==""?'0': _myPreferences.privilege;
+PubCon.userImage=_myPreferences.image==""?"":_myPreferences.image;
     return new Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomPadding: false,
@@ -127,10 +126,10 @@ class HomeScreen extends State<MyHomePageScreen> {
               ),
               new InkWell(
                 onTap: () {
-                  Navigator.of(context).pushReplacement(
+                  Navigator.of(context).push(
                     new MaterialPageRoute(
                       builder: (BuildContext context) {
-                        return new ColoredCardPage();
+                        return new BoardingPass();
                       },
                     ),
                   );
@@ -145,7 +144,18 @@ class HomeScreen extends State<MyHomePageScreen> {
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: () {
+
+Navigator.of(context).push(
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return new HistoriquePass();
+                      },
+                    ),
+                  );
+
+
+                },
                 child: new ListTile(
                   title: new Text('Historique de Voyage',
                       style: new TextStyle(color: Colors.blue)),
@@ -225,11 +235,16 @@ class HomeScreen extends State<MyHomePageScreen> {
               ),
               new InkWell(
                 onTap: () {
+                  if(PubCon.userPrivilege=="" || PubCon.userPrivilege=='0' || PubCon.userPrivilege==null)
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => LoginScreen(),
                           fullscreenDialog: true));
+                  else
+                  //Accueil Administration
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeAdmin()));
+
                 },
                 child: new ListTile(
                   title: new Text(
@@ -237,7 +252,7 @@ class HomeScreen extends State<MyHomePageScreen> {
                     style: new TextStyle(color: Colors.blue),
                   ),
                   leading: new Icon(
-                    Icons.help,
+                    Icons.lock_open,
                     color: Colors.lightBlue,
                   ),
                 ),
@@ -255,6 +270,26 @@ class HomeScreen extends State<MyHomePageScreen> {
                   ),
                 ),
               ),
+              
+              new InkWell(
+                onTap: () {
+                  MyPreferences _myPreferences=MyPreferences();
+                  _myPreferences.automatic=false;
+                  Navigator.pop(context);
+                },
+                child: new ListTile(
+                  title: new Text(
+                    'Deconnexion',
+                    style: new TextStyle(color: Colors.red),
+                  ),
+                  leading: new Icon(
+                    Icons.close,
+                    color: Colors.red,
+                  ),
+                ),
+                
+              ),
+              Divider(),
             ],
           ),
         ),
@@ -296,7 +331,6 @@ class HomeScreen extends State<MyHomePageScreen> {
         ));
   }
 
-  @override
   Widget buildGrid(BuildContext context) {
     return GridView.count(
       padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -318,7 +352,6 @@ class HomeScreen extends State<MyHomePageScreen> {
 
   int _selectedIndex = -1;
 
-  @override
   Widget buildTile(BuildContext context, int index, String heading, Image image,
       IconData icon, String itemCount, Color color, Color backgroundColor) {
     return Container(

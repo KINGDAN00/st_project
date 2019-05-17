@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flights_app/Home/home_screen.dart';
+import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
 import 'package:flights_app/MyClasses/pub.dart';
+import 'package:flights_app/MyDesigns/Administration/homeAdmin.dart';
 import 'package:flights_app/login_signup_screens/otp_login.dart';
 import 'package:flights_app/login_signup_screens/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +17,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+//================SHARED PREFERENCES=====================================
+MyPreferences _myPreferences=MyPreferences();
+bool auto;
+String user1,password1;
+  //======================================================================================
   FocusNode myFocusNode;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email;
+  //String _email;
   String _password;
   TextEditingController user = new TextEditingController();
   TextEditingController pass = new TextEditingController();
@@ -34,11 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.white,
           textColor: Colors.red);
     } else {
-      // if(datauser[0]['privilegeuser']=='Adm'){
-      //   Navigator.pushReplacementNamed(context, '/admin_page');
-      // }else if(datauser[0]['privilegeuser']=='SA'){
-      //   Navigator.pushReplacementNamed(context, '/member_page');
-      // }
       Fluttertoast.showToast(
           msg: 'connexion réussie avec succès',
           toastLength: Toast.LENGTH_SHORT,
@@ -52,8 +54,19 @@ class _LoginScreenState extends State<LoginScreen> {
         PubCon.userPrivilege = datauser[0]['privilegeClient'];
         PubCon.userImage = datauser[0]['photoClient'];
       });
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MyHomePageScreen()));
+      _myPreferences.automatic=auto;
+      _myPreferences.user=PubCon.userName;
+      _myPreferences.password=PubCon.userPass;
+      _myPreferences.nomcomplet=PubCon.userNomComplet;
+      _myPreferences.iduser=PubCon.userId;
+      _myPreferences.privilege=PubCon.userPrivilege;
+      _myPreferences.image=PubCon.userImage;
+      _myPreferences.commit();
+      if(PubCon.userPrivilege=='0')
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePageScreen()));
+          else
+          //appel accueil administration HomeAdmin
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeAdmin()));
     }
     return datauser;
   }
@@ -62,6 +75,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     myFocusNode = FocusNode();
+    _myPreferences.init().then((value){
+if(mounted)
+setState(() {
+  _myPreferences=value;
+});
+    });
   }
 
   @override
@@ -215,6 +234,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           return 'Entrez votre username ';
                         }
                       },
+                      onSaved: (String val){
+                        user1=val;
+                      },
                       obscureText: false,
                       controller: user,
                       keyboardType: TextInputType.text,
@@ -238,6 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: validatePassword,
                       onSaved: (String val) {
                         _password = val;
+                        
                       },
                       focusNode: myFocusNode,
                       obscureText: true,
@@ -263,10 +286,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       margin: EdgeInsets.only(left: 20),
                       child: Row(
                         children: <Widget>[
-                          Checkbox(
-                            activeColor: Colors.deepPurpleAccent,
-                            value: _value1,
-                            onChanged: _value1Changed,
+                          // Checkbox(
+                          //   activeColor: Colors.deepPurpleAccent,
+                          //   value: _value1,
+                          //   onChanged: _value1Changed,
+                          // ),
+                          Switch(
+                            value: _myPreferences.automatic,
+                            onChanged: (value){
+                              auto=value;
+                            },
                           ),
                           Text(
                             "Se souvenir",
@@ -475,17 +504,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _value1Changed(bool value) => setState(() => _value1 = value);
 
-  void _validateInputs() {
-    if (_formKey.currentState.validate()) {
-//    If all data are correct then save data to out variables
-      _formKey.currentState.save();
-    } else {
-//    If all data are not valid then start auto validation.
-      setState(() {
-        _autoValidate = true;
-      });
-    }
-  }
+//   void _validateInputs() {
+//     if (_formKey.currentState.validate()) {
+// //    If all data are correct then save data to out variables
+//       _formKey.currentState.save();
+//     } else {
+// //    If all data are not valid then start auto validation.
+//       setState(() {
+//         _autoValidate = true;
+//       });
+//     }
+//   }
 
   String validateEmail(String value) {
     Pattern pattern =

@@ -53,7 +53,7 @@ Future<Null> _selectDate(BuildContext context) async{
   FocusNode focusNode2;
   FocusNode focusNode3;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email;
+  //String _email;
   String _password;
 
 
@@ -498,10 +498,10 @@ Future<Null> _selectDate(BuildContext context) async{
     );
   }
 
-  bool _value1 = false;
+ // bool _value1 = false;
   bool _autoValidate = false;
 
-  void _value1Changed(bool value) => setState(() => _value1 = value);
+  //void _value1Changed(bool value) => setState(() => _value1 = value);
 
   void _validateInputs(File imageFile, BuildContext ctx) {
     if (_formKey.currentState.validate()) {
@@ -517,17 +517,17 @@ Future<Null> _selectDate(BuildContext context) async{
     }
   }
 
-  String validateEmail(String value) {
-    if (!value.isEmpty) {
-      Pattern pattern =
-          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-      RegExp regex = new RegExp(pattern);
-      if (!regex.hasMatch(value))
-        return 'Enter Valid Email';
-      else
-        return null;
-    }
-  }
+  // String validateEmail(String value) {
+  //   if (!value.isEmpty) {
+  //     Pattern pattern =
+  //         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  //     RegExp regex = new RegExp(pattern);
+  //     if (!regex.hasMatch(value))
+  //       return 'Enter Valid Email';
+  //     else
+  //       return null;
+  //   }
+  // }
 
   String validatePassword(String value) {
     if (value.length < 4)
