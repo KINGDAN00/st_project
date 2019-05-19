@@ -1,6 +1,4 @@
 
-import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
-
 class PubCon{
 static const ip='192.168.43.156';
 static const cheminPhp="http://$ip/smart_php/";
@@ -8,6 +6,7 @@ static const cheminPhp="http://$ip/smart_php/";
 
 static var catEngin=0;
 static var userId='-1';
+static var userIdAgence='-1';
 static var userName='sTicket';
 static var userNomComplet='Smart Ticket';
 static var userPass='';

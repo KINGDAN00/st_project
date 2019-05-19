@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flights_app/Home/home_screen.dart';
-import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
+//import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/Administration/homeAdmin.dart';
 import 'package:flights_app/login_signup_screens/otp_login.dart';
@@ -17,8 +17,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final List<String> _items = ['Client','Agence'].toList();
+  String _selection;
 //================SHARED PREFERENCES=====================================
-MyPreferences _myPreferences=MyPreferences();
+//MyPreferences _myPreferences=MyPreferences();
 bool auto;
 String user1,password1;
   //======================================================================================
@@ -54,33 +56,69 @@ String user1,password1;
         PubCon.userPrivilege = datauser[0]['privilegeClient'];
         PubCon.userImage = datauser[0]['photoClient'];
       });
-      _myPreferences.automatic=auto;
-      _myPreferences.user=PubCon.userName;
-      _myPreferences.password=PubCon.userPass;
-      _myPreferences.nomcomplet=PubCon.userNomComplet;
-      _myPreferences.iduser=PubCon.userId;
-      _myPreferences.privilege=PubCon.userPrivilege;
-      _myPreferences.image=PubCon.userImage;
-      _myPreferences.commit();
-      if(PubCon.userPrivilege=='0')
+      // _myPreferences.automatic=auto;
+      // _myPreferences.user=PubCon.userName;
+      // _myPreferences.password=PubCon.userPass;
+      // _myPreferences.nomcomplet=PubCon.userNomComplet;
+      // _myPreferences.iduser=PubCon.userId;
+      // _myPreferences.privilege=PubCon.userPrivilege;
+      // _myPreferences.image=PubCon.userImage;
+      // _myPreferences.commit();
+      if(PubCon.userPrivilege=='0'){
       Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePageScreen()));
-          else
+          }else{
           //appel accueil administration HomeAdmin
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeAdmin()));
+          Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        HomeAdmin()));
+          }
     }
     return datauser;
   }
-
+//=====================log Agence=============
+Future<List> _loginAgence() async {
+    final response = await http.post(PubCon.cheminPhp + "loginAgence.php",
+        body: {"usersessionAgence": user.text, "passwordAgence": pass.text});
+    //print(response.body);
+    var datauser = json.decode(response.body);
+    if (datauser.length == 0) {
+      Fluttertoast.showToast(
+          msg: 'Echec de connexion',
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.white,
+          textColor: Colors.red);
+    } else {
+      Fluttertoast.showToast(
+          msg: 'connexion réussie avec succès',
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      setState(() {
+        PubCon.userIdAgence = datauser[0]['codeAgence'];
+        PubCon.userNomComplet = datauser[0]['nomAgence'];
+        PubCon.userPass = datauser[0]['passwordAgence'];
+        PubCon.userName = datauser[0]['usersessionAgence'];
+        PubCon.userPrivilege = '1';
+        PubCon.userImage = datauser[0]['logoAgence'];
+      });
+          //appel accueil administration HomeAdmin
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        HomeAdmin()));
+       
+    }
+    return datauser;
+  }
   @override
   void initState() {
     super.initState();
     myFocusNode = FocusNode();
-    _myPreferences.init().then((value){
-if(mounted)
-setState(() {
-  _myPreferences=value;
-});
-    });
+    //_myPreferences.init().then((value){
+// if(mounted)
+// setState(() {
+//   _myPreferences=value;
+// });
+//     });
   }
 
   @override
@@ -92,6 +130,10 @@ setState(() {
 
   @override
   Widget build(BuildContext context) {
+    final dropdownMenuOptions = _items
+        .map((String item) =>
+            new DropdownMenuItem<String>(value: item, child: new Text(item)))
+        .toList();
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
@@ -228,6 +270,28 @@ setState(() {
                     //     FocusScope.of(context).requestFocus(myFocusNode);
                     //   },
                     // ),
+                    Divider(),
+
+                    Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: new DropdownButtonFormField(
+                            value: _selection,
+                            items: dropdownMenuOptions,
+                            onChanged: (s) {
+                              setState(() {
+                                _selection = s;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                             border: new OutlineInputBorder(
+                        borderRadius: new BorderRadius.circular(20.0)),
+                              hintText: 'Quel est votre statut?',
+                            ),
+                          ),
+                        ),
+                    Divider(),
                     TextFormField(
                       validator: (value) {
                         if (value.isEmpty) {
@@ -239,6 +303,7 @@ setState(() {
                       },
                       obscureText: false,
                       controller: user,
+                      focusNode: FocusNode(),
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       textInputAction: TextInputAction.next,
@@ -265,11 +330,12 @@ setState(() {
                       focusNode: myFocusNode,
                       obscureText: true,
                       controller: pass,
+                      
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 16, color: Colors.black),
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
-                        labelText: "Password",
+                        labelText: "Password *",
                         contentPadding: new EdgeInsets.symmetric(
                             vertical:
                                 MediaQuery.of(context).size.height * 0.022,
@@ -286,17 +352,17 @@ setState(() {
                       margin: EdgeInsets.only(left: 20),
                       child: Row(
                         children: <Widget>[
-                          // Checkbox(
-                          //   activeColor: Colors.deepPurpleAccent,
-                          //   value: _value1,
-                          //   onChanged: _value1Changed,
-                          // ),
-                          Switch(
-                            value: _myPreferences.automatic,
-                            onChanged: (value){
-                              auto=value;
-                            },
+                          Checkbox(
+                            activeColor: Colors.deepPurpleAccent,
+                            value: _value1,
+                            onChanged: _value1Changed,
                           ),
+                          // Switch(
+                          //   //value: _myPreferences.automatic,
+                          //   onChanged: (value){
+                          //     auto=value;
+                          //   },
+                          // ),
                           Text(
                             "Se souvenir",
                             style: TextStyle(
@@ -314,7 +380,9 @@ setState(() {
                       child: GestureDetector(
                           onTap: () {
                             print("pressed");
-                            _login();
+                            if(_selection=='Agence'){_loginAgence();} 
+                            else{
+                            _login();}
                            // _validateInputs();
                             if (_autoValidate) {
                               
@@ -527,8 +595,8 @@ setState(() {
   }
 
   String validatePassword(String value) {
-    if (value.length < 6)
-      return 'Password must be atleast 6 digits';
+    if (value.length < 1)
+      return 'Password must be atleast 1 digits';
     else
       return null;
   }

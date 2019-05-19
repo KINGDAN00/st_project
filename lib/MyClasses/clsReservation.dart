@@ -7,5 +7,6 @@ class ClsReservation{
    static String idEnginToSelect;
    static int idReservation;
    static int idReservation2;
+   static int quantite=1;
   
 }

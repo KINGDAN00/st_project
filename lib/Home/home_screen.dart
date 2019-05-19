@@ -49,17 +49,17 @@ class MyHomePageScreen extends StatefulWidget {
 }
 
 class HomeScreen extends State<MyHomePageScreen> {
-MyPreferences _myPreferences=MyPreferences();
+//MyPreferences _myPreferences=MyPreferences();
 
   @override
   Widget build(BuildContext context) {
     //initialisation par les donnees en memoire
-    PubCon.userId=_myPreferences.iduser==""? '-1' :_myPreferences.iduser;
-    PubCon.userName=_myPreferences.user==""? 'sTicket' : _myPreferences.user;
-PubCon.userNomComplet=_myPreferences.nomcomplet==""?'Smart Ticket':_myPreferences.nomcomplet;
-PubCon.userPass=_myPreferences.password;
-PubCon.userPrivilege=_myPreferences.privilege==""?'0': _myPreferences.privilege;
-PubCon.userImage=_myPreferences.image==""?"":_myPreferences.image;
+//     PubCon.userId=_myPreferences.iduser==""? '-1' :_myPreferences.iduser;
+//     PubCon.userName=_myPreferences.user==""? 'sTicket' : _myPreferences.user;
+// PubCon.userNomComplet=_myPreferences.nomcomplet==""?'Smart Ticket':_myPreferences.nomcomplet;
+// PubCon.userPass=_myPreferences.password;
+// PubCon.userPrivilege=_myPreferences.privilege==""?'0': _myPreferences.privilege;
+// PubCon.userImage=_myPreferences.image==""?"":_myPreferences.image;
     return new Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomPadding: false,
@@ -235,16 +235,15 @@ Navigator.of(context).push(
               ),
               new InkWell(
                 onTap: () {
-                  if(PubCon.userPrivilege=="" || PubCon.userPrivilege=='0' || PubCon.userPrivilege==null)
+                  if(PubCon.userPrivilege=="" || PubCon.userPrivilege=='0' || PubCon.userPrivilege==null){
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => LoginScreen(),
                           fullscreenDialog: true));
-                  else
-                  //Accueil Administration
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeAdmin()));
-
+                   } else{
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeAdmin()));}
+//Accueil Administration
                 },
                 child: new ListTile(
                   title: new Text(

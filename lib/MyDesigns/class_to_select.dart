@@ -18,7 +18,8 @@ class _MyClassesState extends State<MyClasses> {
   @override
   void initState() {
     super.initState();
-    _getCode();
+    //_getCode();
+    //_getCode2();
     _charger();
     //_view.sort();
     cNbrePlace.text = "1";
@@ -91,7 +92,7 @@ class _MyClassesState extends State<MyClasses> {
   }
 
   //fx insertReservation
-  Future addReservation(int course) async {
+  Future addReservation() async {
     var uri = Uri.parse(PubCon.cheminPhp + "insertReservation.php");
     var request = new http.MultipartRequest("POST", uri);
     request.fields['refCompte'] = ClsReservation.refCompte;
@@ -101,10 +102,10 @@ class _MyClassesState extends State<MyClasses> {
     request.fields['dateVoyage'] = ClsReservation.dateVoyage;
     var response = await request.send();
     if (response.statusCode == 200) {
-      if(course==1)_getCode();
-      else if(course==2) _getCode2();
+      // if(course==1)_getCode();
+      // else if(course==2) _getCode2();
       print("Enregistrement reussi ${ClsReservation.idReservation}");
-      Fluttertoast.showToast(msg:'Enregistré',toastLength:Toast.LENGTH_SHORT,
+      Fluttertoast.showToast(msg:'Enregistré',toastLength:Toast.LENGTH_LONG,
                               backgroundColor:Colors.white,textColor:Colors.black);
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (BuildContext context) =>
@@ -140,15 +141,18 @@ class _MyClassesState extends State<MyClasses> {
                     if (CritereSelect.course == 1) {
                       ClsReservation.dateVoyage = CritereSelect.datedep.toString();
                       //appel fx insert Reservation
-                      addReservation(1);
+                      addReservation();
+                      _getCode();
                       
                     } else if (CritereSelect.course == 2) {
                       ClsReservation.dateVoyage = CritereSelect.datedep;
                       //appel fx insert Reservation
-                      addReservation(1);
+                      addReservation();
+                      _getCode();
                       ClsReservation.dateVoyage = CritereSelect.dateRet;
                       //appel fx insert Reservation
-                      addReservation(2);
+                      addReservation();
+                      _getCode2();
                       //passer a l'identification des passagers
                     }
                   },

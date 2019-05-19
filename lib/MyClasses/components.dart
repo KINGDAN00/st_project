@@ -31,4 +31,15 @@ static Widget iconaddcons(BuildContext context){
     return new Icon(Icons.directions_car, color: Colors.blue);
   }
 }
+static Widget iconaddconsCat(BuildContext context,String code){
+  if(code=='1'){
+    return new Icon(Icons.directions_boat, color: Colors.blue);
+  }else if(code=='2'){
+    return new Icon(Icons.directions_bus, color: Colors.blue);
+  }else if(code=='3'){
+    return new Icon(Icons.flight_takeoff, color: Colors.blue);
+  }else if(code=='4'){
+    return new Icon(Icons.directions_car, color: Colors.blue);
+  }
+}
 }

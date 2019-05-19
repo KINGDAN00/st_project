@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flights_app/MyClasses/clsCritereSelect.dart';
 import 'package:flights_app/MyClasses/clsReservation.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +36,11 @@ class _MyFactureState extends State<MyFacture> {
         for (int h = 0; h < datauser.length; h++) {
           _montanPay.add(datauser[h]['MontantTotal'].toString());
         }
-        if(ClsReservation.idReservation2!=null){
-          cMontantTotal.text='${(double.parse(_montanPay[0]))*2} \$';
-        }else{
-          cMontantTotal.text='${_montanPay[0]} \$';
-        }
+        // if(ClsReservation.idReservation2!=null){
+          cMontantTotal.text='${(double.parse(_montanPay[0]))*CritereSelect.course} \$';
+        // }else{
+        //   cMontantTotal.text='${_montanPay[0]} \$';
+        // }
         
       });
     }
@@ -128,7 +129,7 @@ class _MyFactureState extends State<MyFacture> {
       appBar: AppBar(
         centerTitle: true,
         title: new Text(
-          'Paiement',
+          'Paiement \n ${ClsReservation.idReservation}',
         ),
       ),
 

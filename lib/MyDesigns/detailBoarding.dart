@@ -2,7 +2,7 @@
 import 'dart:ui';
 import 'package:flights_app/MyDesigns/colored_card_page.dart';
 import 'package:flutter/material.dart';
-//import 'package:qr_flutter/qr_flutter.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:typed_data';
@@ -115,23 +115,23 @@ void initState() {
           //   ),
           // ),
           //=============================
-          // Expanded(
-          //   child:  Center(
-          //     child: RepaintBoundary(
-          //       key: globalKey,
-          //       child: QrImage(
-          //         data: _dataString,
-          //         size: 0.5 * bodyHeight,
-          //         onError: (ex) {
-          //           print("[QR] ERROR - $ex");
-          //           setState((){
-          //             _inputErrorText = "Error! Maybe your input value is too long?";
-          //           });
-          //         },
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          Expanded(
+            child:  Center(
+              child: RepaintBoundary(
+                key: globalKey,
+                child: QrImage(
+                  data: _dataString,
+                  size: 0.5 * bodyHeight,
+                  onError: (ex) {
+                    print("[QR] ERROR - $ex");
+                    setState((){
+                      _inputErrorText = "Error! Maybe your input value is too long?";
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
