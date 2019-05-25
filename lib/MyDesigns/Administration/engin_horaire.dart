@@ -1,8 +1,7 @@
 
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
-import 'package:flights_app/MyClasses/components.dart';
 import 'package:flights_app/MyClasses/pub.dart';
-import 'package:flights_app/MyDesigns/Administration/engin_charge.dart';
+import 'package:flights_app/MyDesigns/Administration/engin_horaireList.dart';
 import 'package:flights_app/MyDesigns/DialogComponents/lieu_to_select.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,9 +9,10 @@ import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Horaire extends StatefulWidget {
-  final NosEnginsFull value;
+  final NosHorairesFull value;
+  final String action,refEngin;
 
-  const Horaire({Key key, this.value}) : super(key: key);
+  const Horaire({Key key, this.value, this.action, this.refEngin}) : super(key: key);
   @override
   HoraireState createState() {
     return new HoraireState();
@@ -54,6 +54,18 @@ void innitialiser(){
   cHeureDepart.text="";
   cLieuArret.text="";
 }
+void populate(){
+  if(widget.action=='update'){
+    _selectionJours='${widget.value.jourH}';
+    _selectionTypeCourse='${widget.value.typeCourseH}';
+    cLieuDepart.text='${widget.value.lieuDepH}';
+    CritereSelect.depart='${widget.value.lieuDepH}';
+    cLieuArret.text='${widget.value.lieuArriveH}';
+    CritereSelect.arrive='${widget.value.lieuArriveH}';
+    cHeureDepart.text='${widget.value.heureDepH}';
+    cHeureArrive.text='${widget.value.heureArriveH}';
+  }
+}
 //INSERTION HORAIRE
 Future saveHoraire() async {
     var uri = Uri.parse(PubCon.cheminPhp + "insertHoraire.php");
@@ -64,7 +76,7 @@ Future saveHoraire() async {
     request.fields['LieuArret'] = CritereSelect.arrive;
     request.fields['heureDepart'] = cHeureDepart.text;
     request.fields['heureArrive'] = cHeureArrive.text;
-    request.fields['refEngin'] = '${widget.value.codeEngin}';
+    request.fields['refEngin'] = '${widget.refEngin}';
     request.fields['refAgence'] = '${PubCon.userIdAgence}';
     
     var response = await request.send();
@@ -80,8 +92,40 @@ Future saveHoraire() async {
                               backgroundColor:Colors.white,textColor:Colors.black);
     }
   }
+//MODIFICATION HORAIRE
+Future updateHoraire() async {
+  try{
+    var uri = Uri.parse(PubCon.cheminPhp + "updateHoraire.php");
+    var request = new http.MultipartRequest("POST", uri);
+    request.fields['codeHoraire'] ='${widget.value.codeH}';
+    request.fields['Jours'] =''+_selectionJours;
+    request.fields['typeCourse'] =''+_selectionTypeCourse;
+    request.fields['LieuDepart'] = CritereSelect.depart;
+    request.fields['LieuArret'] = CritereSelect.arrive;
+    request.fields['heureDepart'] = cHeureDepart.text;
+    request.fields['heureArrive'] = cHeureArrive.text;
+    request.fields['refEngin'] = '${widget.refEngin}';
+    request.fields['refAgence'] = '${PubCon.userIdAgence}';
+    
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(msg:'Horaire Modifié',toastLength:Toast.LENGTH_SHORT,
+                              backgroundColor:Colors.white,textColor:Colors.black);
+                              innitialiser();
+      //PubCon.showDialogcz(ctx, "Confirm", "Enregistrement reussi");
+    } else {
+      Fluttertoast.showToast(msg:'Echec de Modification',toastLength:Toast.LENGTH_SHORT,
+                              backgroundColor:Colors.white,textColor:Colors.black);
+    }
+  }catch(e){
+    throw new Exception("");
+  }
+  }
 
-
+void testActionDo(){
+  if(widget.action=="insert"){saveHoraire();}
+  else if(widget.action=="update"){updateHoraire();}
+}
 
   @override
   Widget build(BuildContext context) {
@@ -93,17 +137,19 @@ Future saveHoraire() async {
         .map((String item) =>
             new DropdownMenuItem<String>(value: item, child: new Text(item)))
         .toList();
+
+        populate();
     return 
     Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.blue),
-        title: Text('Engin: ${widget.value.designationEngin}',style:TextStyle(color: Colors.blue),),
+        title: Text('action: ${widget.action}',style:TextStyle(color: Colors.blue),),
         actions: <Widget>[
         IconButton(
           icon: Icon(Icons.save),
           onPressed: (){
-            saveHoraire();
+            testActionDo();
 
           },
         )

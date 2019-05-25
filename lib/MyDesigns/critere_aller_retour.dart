@@ -87,50 +87,68 @@ Future<Null> _selectDate2(BuildContext context) async{
     textInputAnimationController.dispose();
     super.dispose();
   }
-
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
+              autovalidate: _autoValidate,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-              child: TextField(
-                maxLines: 2,
-                controller: depart,
-                decoration: InputDecoration(
-                  icon: Componentss.iconaddcons(context),
-                  //labelText: "Depart",
-                  hintText: 'Depart:\n'+CritereSelect.depart.toString()
-                ),
-                onTap: (){
-                  CritereSelect.est_Depart_Ou_Arrive=1;
-                  showMyDialog("Depart");
-                },
-                onChanged:(text){
-                  //getData();
-                }
+              child: Row(
+                children: <Widget>[
+                  
+                  Expanded(
+                    child: TextField(
+                      maxLines: 2,
+                      controller: depart,
+                      decoration: InputDecoration(
+                        icon: Componentss.iconaddcons(context),
+                        //labelText: "Depart",
+                        hintText: 'Depart:\n'+CritereSelect.depart.toString()
+                      ),
+                      onTap: (){
+                        CritereSelect.est_Depart_Ou_Arrive=1;
+                        showMyDialog("Depart");
+                      },
+                      onChanged:(text){
+                        //getData();
+                      }
+                    ),
+                  ),
+                  Icon(Icons.arrow_right,color: Colors.blueAccent,),
+                ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-              child: TextField(
-                maxLines: 2,
-                controller: arrive,
-                decoration: InputDecoration(
-                  //icon: Icon(Icons.flight_land, color: Colors.blue),
-                  icon: Componentss.iconaddcons(context),
-                  //labelText: "Destination",
-                  hintText: 'destination:\n ${CritereSelect.arrive}'
-                ),
-                onChanged:(text){
-                },
-                onTap: (){
-                  CritereSelect.est_Depart_Ou_Arrive=2;
-                  showMyDialog('Destination');
-                },
+              child: Row(
+                children: <Widget>[
+                  
+                  Expanded(
+                    child: TextField(
+                      maxLines: 2,
+                      controller: arrive,
+                      decoration: InputDecoration(
+                        //icon: Icon(Icons.flight_land, color: Colors.blue),
+                        icon: Componentss.iconaddcons(context),
+                        //labelText: "Destination",
+                        hintText: 'destination:\n ${CritereSelect.arrive}'
+                      ),
+                      onChanged:(text){
+                      },
+                      onTap: (){
+                        CritereSelect.est_Depart_Ou_Arrive=2;
+                        showMyDialog('Destination');
+                      },
+                    ),
+                  ),
+                  Icon(Icons.arrow_left,color: Colors.blueAccent,),
+                ],
               ),
             ),
             
@@ -193,10 +211,7 @@ Future<Null> _selectDate2(BuildContext context) async{
           padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
           child: FloatingActionButton(
             onPressed: () {
-              CritereSelect.course=2;
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      GetHoraireAllerRetour()));
+              _validateInputs();
               // Navigator.of(context).pushReplacement(MaterialPageRoute(
               //     builder: (BuildContext context) =>
               //         FlightListScreen(fullName: nameController.text,catEngin:CritereSelect.refCatEngin,arrive:CritereSelect.arrive,depart: CritereSelect.depart,datedep: CritereSelect.datedep,)));
@@ -205,6 +220,14 @@ Future<Null> _selectDate2(BuildContext context) async{
             child: Icon(Icons.timeline, size: 36.0),
           ),
         ),
+        TextFormField(
+                                
+                                maxLines: 1,
+                        validator: validateValeurs,
+                      onSaved: (String val) {
+                        //_password = val;
+                      },
+                              ),
           ],
           
         ),
@@ -213,11 +236,34 @@ Future<Null> _selectDate2(BuildContext context) async{
     );
   }
 
-  CurvedAnimation _buildInputAnimation({double begin, double end}) {
-    return new CurvedAnimation(
-        parent: textInputAnimationController,
-        curve: Interval(begin, end, curve: Curves.linear)
-    );
+  // bool _value1 = false;
+  bool _autoValidate = false;
+  void _validateInputs() {
+    if (_formKey.currentState.validate()) {
+      //    If all data are correct then save data to out variables
+      _formKey.currentState.save();
+      //getValues
+      CritereSelect.course=2;
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      GetHoraireAllerRetour()));
+    } else {
+      //    If all data are not valid then start auto validation.
+      setState(() {
+        _autoValidate = true;
+      });
+    }
   }
-
+String validateValeurs(String value) {
+    if (CritereSelect.arrive==CritereSelect.depart)
+      return 'la destination doit être différente du depart';
+    else if (DateTime.parse(CritereSelect.datedep).isBefore(DateTime.now()))
+    return 'la date de depart est déjà passée';
+    else if (DateTime.parse(CritereSelect.dateRet).isBefore(DateTime.now()))
+    return 'la date de retour est déjà passée';
+    else if (DateTime.parse(CritereSelect.dateRet).isBefore(DateTime.parse(CritereSelect.datedep)))
+    return 'la date de retour est inférieure à celle de depart';
+    else
+      return null;
+  }
 }

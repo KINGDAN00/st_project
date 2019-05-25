@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
 import 'package:flights_app/MyClasses/clsReservation.dart';
+import 'package:flights_app/MyClasses/components.dart';
 import 'package:flights_app/MyClasses/det.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/class_to_select.dart';
@@ -19,6 +20,7 @@ class _GetHoraireAllerState extends State<GetHoraireAller> {
   var _heureDepAller = [""];
   var _heureArriveAller = [""];
   var _enginAller = [""];
+  var _logoAg=[""];
   List<String> _agenceID=[""];
   var _horaireID=[""];
   var _idEngin = [""];
@@ -34,8 +36,10 @@ class _GetHoraireAllerState extends State<GetHoraireAller> {
       "refCatEngin": CritereSelect.refCatEngin.toString(),
     });
     //print(response.body);
+    try{
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
+      if(mounted)
       setState(() {
         _enginAller=["Aucun resultat"];
       });
@@ -48,30 +52,27 @@ class _GetHoraireAllerState extends State<GetHoraireAller> {
   _idEngin.clear();
   _agenceID.clear();
   _horaireID.clear();
+  _logoAg.clear();
       //clearItems();
       if(mounted){
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
-          var depart = datauser[h]['LieuDepart'].toString();
-          var arrive = datauser[h]['LieuArret'].toString();
-          var heureDep = datauser[h]['heureDepart'].toString();
-          var heureArrive = datauser[h]['heureArrive'].toString();
-          var engin = datauser[h]['designationEngin'].toString();
-          var idEngin = datauser[h]['refEngin'].toString();
-          var idAgence = datauser[h]['codeAgence'].toString();
-          var idHoraire = datauser[h]['codeHoraire'].toString();
-          _depAller.add(depart);
-  _arriveAller.add(arrive);
-  _heureDepAller.add(heureDep);
-  _heureArriveAller.add(heureArrive);
-  _enginAller.add(engin);
-  _idEngin.add(idEngin);
-  _agenceID.add(idAgence);
-  _horaireID.add(idHoraire);
+          _depAller.add(datauser[h]['LieuDepart'].toString());
+  _arriveAller.add(datauser[h]['LieuArret'].toString());
+  _heureDepAller.add(datauser[h]['heureDepart'].toString());
+  _heureArriveAller.add(datauser[h]['heureArrive'].toString());
+  _enginAller.add(datauser[h]['designationEngin'].toString());
+  _idEngin.add(datauser[h]['refEngin'].toString());
+  _agenceID.add(datauser[h]['codeAgence'].toString());
+  _horaireID.add(datauser[h]['codeHoraire'].toString());
+  _logoAg.add(datauser[h]['logoAgence'].toString());
         }
       });}
     }
     return datauser;
+    }catch(ex){
+      
+    }
   }
 //create a listView
  Widget maListeDetail(BuildContext context,String refEngin1){
@@ -207,10 +208,11 @@ Expanded(
                           ],
                         ),
                         ListTile(
-                          title: Text("${_enginAller[index]}",style: TextStyle(color: Colors.red),),
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.blue
-                          ),
+                          title: Text("${_enginAller[index]}",style: TextStyle(color: Colors.blue),),
+                          leading: Componentss.manageImage(context,"${_logoAg[index]}")
+                          // CircleAvatar(
+                          //   backgroundColor: Colors.blue
+                          // ),
                         )
                       ],
                     ),),

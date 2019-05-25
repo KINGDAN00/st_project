@@ -32,7 +32,7 @@ cDateNaiss=new TextEditingController()
 final f=new DateFormat('yyyy-MM-dd');
 DateTime dateNaiss=DateTime.now();
 DateTime dateExp=DateTime.now();
-final List<String> _items = ['M', 'F'].toList();
+final List<String> _items = ['Masculin', 'Féminin'].toList();
 int compteur=0;
   String _selection;
 Future<Null> _selectDateNaiss(BuildContext context) async{

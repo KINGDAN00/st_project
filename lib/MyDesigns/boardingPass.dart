@@ -1,20 +1,19 @@
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/boardingPers.dart';
 import 'package:flights_app/MyDesigns/detailBoarding.dart';
-import 'package:flights_app/myCompteMoney/widgets/colored_card.dart';
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' show get;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class HistoriquePass extends StatefulWidget {
+class BoardingPass extends StatefulWidget {
   @override
-  HistoriquePassState createState() {
-    return new HistoriquePassState();
+  BoardingPassState createState() {
+    return new BoardingPassState();
   }
 }
 
-class HistoriquePassState extends State<HistoriquePass> {
+class BoardingPassState extends State<BoardingPass> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -22,8 +21,8 @@ class HistoriquePassState extends State<HistoriquePass> {
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.red,
-        title: Text("Historique"),
+        backgroundColor: Colors.blue,
+        title: Text("Boarding_Pass"),
       ),
       body: 
       //ListView(
@@ -31,11 +30,11 @@ class HistoriquePassState extends State<HistoriquePass> {
       //   children: <Widget>[
       //     ColoredCard(
       //       padding: 0.0,
-      //       headerColor: Colors.red,
-      //       footerColor: Colors.redAccent,
+      //       headerColor: Colors.blue,
+      //       footerColor: Colors.blueAccent,
       //       cardHeight: 180,
       //       elevation: 2,
-      //       bodyColor: Colors.red,
+      //       bodyColor: Colors.lightBlueAccent,
       //       showFooter: true,
       //       showHeader: true,
             
@@ -51,7 +50,7 @@ class HistoriquePassState extends State<HistoriquePass> {
       //       ),
       //       headerBar: HeaderBar(
       //           title: Text(
-      //             "MES BILLETS PASSES",
+      //             "MES BILLETS",
       //             style: TextStyle(
       //                 color: Colors.white,
       //                 fontWeight: FontWeight.bold,
@@ -91,7 +90,7 @@ class HistoriquePassState extends State<HistoriquePass> {
       //           // crossAxisAlignment: CrossAxisAlignment.start,
       //           children: <Widget>[
       //             Text(
-      //               "Consulter mes billets pour les voyages passées",
+      //               "Consulter mes billets pour les prochains voyages",
       //               style: TextStyle(
       //                   fontWeight: FontWeight.w500,
       //                   fontSize: 17,
@@ -107,7 +106,7 @@ class HistoriquePassState extends State<HistoriquePass> {
       //       ),
       //       footerBar: FooterBar(
       //         title: Text(
-      //           "VOYAGES PASSES",
+      //           "VOYAGES A VENIR",
       //           style: TextStyle(
       //               color: Colors.white,
       //               fontWeight: FontWeight.bold,
@@ -121,36 +120,24 @@ class HistoriquePassState extends State<HistoriquePass> {
       //     ),
           new Container(
           child: new FutureBuilder<List<BilletsFull>>(
-  
-                      future: downloadJSON(),
-  
-                      builder: (context, snapshot) {
-  
-                        if (snapshot.hasData) {
-  
-                          List<BilletsFull> billetsFull = snapshot.data;
-  
-  
-  
-                          return CustomListView(billetsFull);
-  
-                        } else if (snapshot.hasError) {
-  
-                          return Text('${snapshot.error}');
-  
-                        }
-  
-  
-  
-                        return Align(
+              future: downloadJSON(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<BilletsFull> billetsFull = snapshot.data;
+
+                  return CustomListView(billetsFull);
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+
+                return new Align(
   
                           alignment: Alignment.center,
   
                           child: new CircularProgressIndicator());
-  
-                      }),),
+              })),
           
-        
+       
     );
   }
 
@@ -253,7 +240,7 @@ class CustomListView extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             Expanded(
-                              child:Text(billetFull.dateVoyage,style: TextStyle(color: Colors.blue),textAlign:TextAlign.center,) ,
+                              child:Text("${billetFull.dateVoyage}",style: TextStyle(color: Colors.blue),textAlign: TextAlign.center,) ,
                             ),
                             Expanded(
                               child: Text("# ${billetFull.refReservation}",style: TextStyle(color: Colors.blue),textAlign: TextAlign.center,),
@@ -296,12 +283,13 @@ Expanded(
                       ],
                     ),),
            
-            
             ],
           ),
         ),
       ),
       onTap: () {
+        //create a detail page
+        //
         var route = new MaterialPageRoute(
           builder: (BuildContext context) =>
               new BoardingPassPers(refReservation: billetFull.refReservation
@@ -315,12 +303,10 @@ Expanded(
 }
 
 Future<List<BilletsFull>> downloadJSON() async {
-  final jsonEndpoint = PubCon.cheminPhp + "GetHistoriqueVoyagePasser.php";
-  final response = await http.post(jsonEndpoint
-  ,body:{
-   "refCompte":PubCon.userId.toString()
-  }
-  );
+  //final jsonEndpoint = PubCon.cheminPhp + "GetHistoriqueVoyageFuture.php";
+  final response = await http.post(PubCon.cheminPhp + "GetHistoriqueVoyageFuture.php",body:{
+    "refCompte":PubCon.userId.toString()
+  });
   //var data = json.decode(response.body);
   if (response.statusCode == 200) {
     //if(data.length != 0){

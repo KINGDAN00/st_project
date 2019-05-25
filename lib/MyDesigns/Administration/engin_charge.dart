@@ -1,6 +1,6 @@
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/Administration/engin_classes.dart';
-import 'package:flights_app/MyDesigns/Administration/engin_horaire.dart';
+import 'package:flights_app/MyDesigns/Administration/engin_horaireList.dart';
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' show get;
 import 'package:http/http.dart' as http;
@@ -40,7 +40,9 @@ class NosEnginsState extends State<NosEngins> {
                   return Text('${snapshot.error}');
                 }
 
-                return new CircularProgressIndicator();
+                return Align(
+                  alignment: Alignment.center,
+                  child: new CircularProgressIndicator());
               })),
     );
   }
@@ -80,6 +82,7 @@ class CustomListView extends StatelessWidget {
 
   Widget createViewItem(NosEnginsFull enginFull, BuildContext context,String menu) {
     return new ListTile(
+      contentPadding: EdgeInsets.all(1.0),
       title: new Card(
         elevation: 3.0,
         child: Container(
@@ -126,7 +129,7 @@ var route = new MaterialPageRoute(
         }else if(menu=='horaire'){
 var route = new MaterialPageRoute(
           builder: (BuildContext context) =>
-              new Horaire(value: enginFull),
+              new NosHoraires(value: enginFull),
         );
         Navigator.of(context).push(route);
         } 

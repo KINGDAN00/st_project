@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'package:async/async.dart';
+import 'package:flights_app/MyClasses/clsAgence.dart';
+import 'package:flights_app/MyClasses/components.dart';
 import 'package:flights_app/MyClasses/pub.dart';
-import 'package:flights_app/login_signup_screens/login_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -12,48 +13,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
-class SignupScreen extends StatefulWidget {
+class UpdateAgence extends StatefulWidget {
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  _UpdateAgenceState createState() => _UpdateAgenceState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _UpdateAgenceState extends State<UpdateAgence> {
 
-TextEditingController cNomsUser = new TextEditingController(),
-      cAddresse = new TextEditingController(),
-      cContact = new TextEditingController(),
-      cUsername = new TextEditingController(),
-      cpassword = new TextEditingController(),
-      cCodePostale = new TextEditingController(),
-      cNationalite= new TextEditingController(),
-      cNumPassport= new TextEditingController(),
-      cdateExp = new TextEditingController();
-DateTime date;
-Future<Null> _selectDate(BuildContext context) async{
-  final DateTime picked = await
-  showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime(2099),
-
-                  );
-                  setState(() {
-                   date =picked;
-                  });
-}
-
-
-
-
-
-  
+TextEditingController cNomAgence = new TextEditingController(),
+      cContactMail = new TextEditingController(),
+      cContactPhone = new TextEditingController(),
+      // cUsername = new TextEditingController(),
+      cpassword = new TextEditingController();
   File _image;
   FocusNode focusNode1;
   FocusNode focusNode2;
   FocusNode focusNode3;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  //String _email;
+  String _email;
   String _password;
 
 
@@ -66,6 +43,14 @@ Future<Null> _selectDate(BuildContext context) async{
     focusNode3 = FocusNode();
   }
 
+void populateAg(){
+  cNomAgence.text=PubCon.userNomComplet;
+  cContactMail.text=AgenceCls.adresseMail;
+  cContactPhone.text=AgenceCls.numTel;
+  cpassword.text="";
+
+}
+
   @override
   void dispose() {
     // Clean up the focus node when the Form is disposed
@@ -77,6 +62,7 @@ Future<Null> _selectDate(BuildContext context) async{
 
   @override
   Widget build(BuildContext context) {
+    populateAg();
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
@@ -160,7 +146,14 @@ Future<Null> _selectDate(BuildContext context) async{
                   child: Column(
                     children: <Widget>[
                       Text(
-                        "Sign Up",
+                        "Update Info",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
+                      Text(
+                        '#00${PubCon.userIdAgence}',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -186,11 +179,11 @@ Future<Null> _selectDate(BuildContext context) async{
                   TextFormField(
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Entrez votre nom';
+                        return 'Entrez le nom';
                       }
                     },
                     obscureText: false,
-                    controller: cNomsUser,
+                    controller: cNomAgence,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
@@ -211,18 +204,19 @@ Future<Null> _selectDate(BuildContext context) async{
                     height: 10,
                   ),
                   TextFormField(
-                    validator: (value) {
+                    validator: validateEmail,
+                    onSaved:(value) {
                       if (value.isEmpty) {
-                        return 'Entrez votre Adress';
+                        return 'Entrez votre Adresse Mail';
                       }
                     },
                     obscureText: false,
-                    controller: cAddresse,
+                    controller: cContactMail,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: "Adress phisyque *",
+                      labelText: "Adresse Mail *",
                       contentPadding: new EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.height * 0.022,
                           horizontal: 15.0),
@@ -240,11 +234,11 @@ Future<Null> _selectDate(BuildContext context) async{
                   TextFormField(
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Entrez votre Numero';
+                        return 'Entrez votre Numéro de Telephone';
                       }
                     },
                     obscureText: false,
-                    controller: cContact,
+                    controller: cContactPhone,
                     keyboardType: TextInputType.phone,
                     style: TextStyle(fontSize: 16, color: Colors.black),
                     textInputAction: TextInputAction.next,
@@ -261,60 +255,34 @@ Future<Null> _selectDate(BuildContext context) async{
                       FocusScope.of(context).requestFocus(focusNode1);
                     },
                   ),
+                  
                   SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Entrez votre Nationalité ';
-                      }
-                    },
-                    obscureText: false,
-                    controller: cNationalite,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: "Nationalité *",
-                      contentPadding: new EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.022,
-                          horizontal: 15.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                      ),
-                    ),
-                    onFieldSubmitted: (String value) {
-                      FocusScope.of(context).requestFocus(focusNode1);
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Entrez votre username ';
-                      }
-                    },
-                    obscureText: false,
-                    controller: cUsername,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: "Username *",
-                      contentPadding: new EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.022,
-                          horizontal: 15.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                      ),
-                    ),
-                    onFieldSubmitted: (String value) {
-                      FocusScope.of(context).requestFocus(focusNode1);
-                    },
-                  ),
+                  // TextFormField(
+                  //   validator: (value) {
+                  //     if (value.isEmpty) {
+                  //       return 'Entrez votre username ';
+                  //     }
+                  //   },
+                  //   obscureText: false,
+                  //   controller: cUsername,
+                  //   keyboardType: TextInputType.text,
+                  //   style: TextStyle(fontSize: 16, color: Colors.black),
+                  //   textInputAction: TextInputAction.next,
+                  //   decoration: InputDecoration(
+                  //     labelText: "Username *",
+                  //     contentPadding: new EdgeInsets.symmetric(
+                  //         vertical: MediaQuery.of(context).size.height * 0.022,
+                  //         horizontal: 15.0),
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.all(Radius.circular(25)),
+                  //     ),
+                  //   ),
+                  //   onFieldSubmitted: (String value) {
+                  //     FocusScope.of(context).requestFocus(focusNode1);
+                  //   },
+                  // ),
                   SizedBox(
                     height: 10,
                   ),
@@ -375,10 +343,12 @@ Future<Null> _selectDate(BuildContext context) async{
                           child: Align(
                             alignment: Alignment.center,
                               child: _image == null
-                                  ? new Text(
-                                      "No image selected!",
-                                      textAlign: TextAlign.center,
-                                    )
+                                  ? 
+                                  Componentss.manageImage(context, PubCon.userImage)
+                                  // new Text(
+                                  //     "No image selected!",
+                                  //     textAlign: TextAlign.center,
+                                  //   )
                                   : new Image.file(_image,fit:BoxFit.cover,)),
                         ),
                       )
@@ -388,75 +358,15 @@ Future<Null> _selectDate(BuildContext context) async{
                   SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    obscureText: false,
-                    controller: cCodePostale,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                    //textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: "Code Postal",
-                      contentPadding: new EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.022,
-                          horizontal: 15.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                      ),
-                    ),
-                    // onFieldSubmitted: (String value) {
-                    //   FocusScope.of(context).requestFocus(focusNode1);
-                    //},
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    obscureText: false,
-                    controller: cNumPassport,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: "Numero Passport",
-                      contentPadding: new EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.022,
-                          horizontal: 15.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                      ),
-                    ),
-                    onFieldSubmitted: (String value) {
-                      FocusScope.of(context).requestFocus(focusNode1);
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
-                    obscureText: false,
-                    maxLines: 2,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: "Date D'expiration du Passport",
-                      hintText: 'Date:\n'+date.toString(),
-                      contentPadding: new EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.022,
-                          horizontal: 15.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                      ),
-                    ),
-                    onTap: (){_selectDate(context);}
-                  ),
+                  
+                  
                   SizedBox(
                     height: 15,
                   ),
                   Container(
                     child: GestureDetector(
                         onTap: () {
-                          print("pressed");
+                          //print("pressed");
                           _validateInputs(_image, context);
                         },
                         child: Container(
@@ -467,7 +377,7 @@ Future<Null> _selectDate(BuildContext context) async{
                                   BorderRadius.all(Radius.circular(25))),
                           child: Center(
                             child: Text(
-                              "SIGN UP",
+                              "UPDATE",
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             ),
@@ -480,7 +390,7 @@ Future<Null> _selectDate(BuildContext context) async{
                   Container(
                     child: GestureDetector(
                         onTap: () {
-                          print("pressed");
+                          //print("pressed");
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -515,7 +425,7 @@ Future<Null> _selectDate(BuildContext context) async{
       //    If all data are correct then save data to out variables
       _formKey.currentState.save();
       //save user in the database
-      saveUser(imageFile, ctx);
+      updateAgence(imageFile, ctx);
     } else {
       //    If all data are not valid then start auto validation.
       setState(() {
@@ -524,17 +434,17 @@ Future<Null> _selectDate(BuildContext context) async{
     }
   }
 
-  // String validateEmail(String value) {
-  //   if (!value.isEmpty) {
-  //     Pattern pattern =
-  //         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-  //     RegExp regex = new RegExp(pattern);
-  //     if (!regex.hasMatch(value))
-  //       return 'Enter Valid Email';
-  //     else
-  //       return null;
-  //   }
-  // }
+  String validateEmail(String value) {
+    if (!value.isEmpty) {
+      Pattern pattern =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      RegExp regex = new RegExp(pattern);
+      if (!regex.hasMatch(value))
+        return 'Enter Valid Email';
+      else
+        return null;
+    }
+  }
 
   String validatePassword(String value) {
     if (value.length < 4)
@@ -543,6 +453,7 @@ Future<Null> _selectDate(BuildContext context) async{
       return null;
   }
 Future getImageGallery() async{
+  try{
 var imageFile=await ImagePicker.pickImage(source: ImageSource.gallery);
 
 final tempDir=await getTemporaryDirectory();
@@ -557,8 +468,13 @@ var compressImg=new File("$path/image_$rand.jpg")
 setState(() {
  _image=compressImg; 
 });
+  }catch(ex){
+    print('Erreur $ex');
+  }
+
 }
 Future getImageCamera() async{
+try{
 var imageFile=await ImagePicker.pickImage(source: ImageSource.camera);
 final tempDir=await getTemporaryDirectory();
 final path=tempDir.path;
@@ -572,41 +488,36 @@ var compressImg=new File("$path/image_$rand.jpg")
 setState(() {
  _image=compressImg; 
 });
+}catch(ex){
+  print('Erreur $ex');
+}
 }
 
-//procedure for saving user
-Future saveUser(File imageFile, BuildContext ctx) async {
+//procedure for update
+Future updateAgence(File imageFile, BuildContext ctx) async {
     try{
       var stream =
         new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
-    var uri = Uri.parse(PubCon.cheminPhp + "insertCompte.php");
+    var uri = Uri.parse(PubCon.cheminPhp + "updateAgence.php");
     var request = new http.MultipartRequest("POST", uri);
     var multipartFile = new http.MultipartFile("image", stream, length,
         filename: basename(imageFile.path));
-    request.fields['nomClient'] = cNomsUser.text;
-    request.fields['adresseClient'] = cAddresse.text;
-    request.fields['contactClient'] = cContact.text;
-    request.fields['passuser'] = cpassword.text;
-    request.fields['usernameClient'] =cUsername.text;
-    request.fields['passwordClient'] =cpassword.text;
-    request.fields['code_postal'] =cCodePostale.text;
-    request.fields['Nationnalite'] =cNationalite.text;
-    request.fields['NumeroPasseport'] =cNumPassport.text;
-    request.fields['DateExpirationPasseport'] = date.toString();
+    request.fields['codeAgence'] =PubCon.userIdAgence;
+    request.fields['nomAgence'] = cNomAgence.text;
+    request.fields['email'] = cContactMail.text;
+    request.fields['contactAgence'] = cContactPhone.text;
+    request.fields['passwordAgence'] = cpassword.text;
     request.files.add(multipartFile);
     var response = await request.send();
     if (response.statusCode == 200) {
-      print("Enregistrement reussi");
-      Fluttertoast.showToast(msg:'Passager Enregistré',toastLength:Toast.LENGTH_SHORT,
+      //print("Modification reussi");
+      Fluttertoast.showToast(msg:'Agence Modifié',toastLength:Toast.LENGTH_SHORT,
                               backgroundColor:Colors.white,textColor:Colors.black);
-      Navigator.pushReplacement(
-          ctx,
-          MaterialPageRoute(
-              builder: (ctx) => LoginScreen(), fullscreenDialog: true));
+      Navigator.pop(ctx);
     } else {
-      print("Echec d'enregistrement");
-      Fluttertoast.showToast(msg:'Echec enregistrement',toastLength:Toast.LENGTH_SHORT,
+      //print("Echec de Modification");
+      Fluttertoast.showToast(msg:'Echec Modification',toastLength:Toast.LENGTH_SHORT,
                               backgroundColor:Colors.white,textColor:Colors.red);
     }
     }catch(e){

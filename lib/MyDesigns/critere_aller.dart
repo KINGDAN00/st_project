@@ -54,10 +54,12 @@ Future<Null> _selectDate(BuildContext context) async{
     textInputAnimationController.dispose();
     super.dispose();
   }
-
+final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
+              autovalidate: _autoValidate,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -65,37 +67,64 @@ Future<Null> _selectDate(BuildContext context) async{
             
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-              child: TextField(
-                maxLines: 2,
-                controller: depart,
-                decoration: InputDecoration(
-                  icon:Componentss.iconaddcons(context),
-                  //labelText: "Depart",
-                  hintText: 'Depart:\n'+CritereSelect.depart.toString()
-                ),
-                onTap: (){
-                  CritereSelect.est_Depart_Ou_Arrive=1;
-                  showMyDialog("Depart");
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.arrow_right,color: Colors.blueAccent,),
+                  Componentss.iconaddcons(context),
                   
-                },
+                  
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        maxLines: 2,
+                        controller: depart,
+                        decoration: InputDecoration(
+                          //icon:Componentss.iconaddcons(context),
+                          //labelText: "Depart",
+                          hintText: 'Depart:\n'+CritereSelect.depart.toString()
+                        ),
+                        onTap: (){
+                          CritereSelect.est_Depart_Ou_Arrive=1;
+                          showMyDialog("Depart");
+                          
+                        },
+                      ),
+                    ),
+                  ),
+                  
+                ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
-              child: TextField(
-                maxLines: 2,
-                controller: arrive,
-                decoration: InputDecoration(
-                  icon:Componentss.iconaddcons(context),
-                  //labelText: "Destination",
-                  hintText: 'destination:\n ${CritereSelect.arrive}'
-                ),
-                onTap: (){
-                  CritereSelect.est_Depart_Ou_Arrive=2;
-                  showMyDialog('Destination');
-                                  },
-                                  
-                                ),
+              child: Row(
+                children: <Widget>[
+                  Componentss.iconaddcons(context),
+                  Icon(Icons.arrow_right,color: Colors.blueAccent,),
+                  Expanded(
+                    child:  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                          
+                          maxLines: 2,
+                          controller: arrive,
+                          decoration: InputDecoration(
+                            // icon:Componentss.iconaddcons(context),
+                            //labelText: "Destination",
+                            hintText: 'destination:\n ${CritereSelect.arrive}'
+                          ),
+                          onTap: () {
+                       CritereSelect.est_Depart_Ou_Arrive=2;
+                            showMyDialog('Destination');}
+                          ),
+                    ),
+                        
+                    
+                  ),
+                  
+                ],
+              ),
                               ),
                               Row(
                                 children: <Widget>[
@@ -132,15 +161,13 @@ Future<Null> _selectDate(BuildContext context) async{
                                   // ),
                                 ],
                               ),
-                              Expanded(child: Container()),
+                              //Expanded(child: Container()),
+                              
                           Padding(
                             padding: const EdgeInsets.only(bottom: 16.0, top: 8.0),
                             child: FloatingActionButton(
                               onPressed: () {
-                                CritereSelect.course=1;
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        GetHoraireAller()));
+                                _validateInputs();
                                 // Navigator.of(context).pushReplacement(MaterialPageRoute(
                                 //     builder: (BuildContext context) =>
                                 //         FlightListScreen(fullName: nameController.text,catEngin:CritereSelect.refCatEngin,arrive:CritereSelect.arrive,depart: CritereSelect.depart,datedep: CritereSelect.datedep,)));
@@ -149,16 +176,17 @@ Future<Null> _selectDate(BuildContext context) async{
                               child: Icon(Icons.timeline, size: 36.0),
                             ),
                           ),
+                          TextFormField(
+                                
+                                maxLines: 1,
+                        validator: validateDestination,
+                      onSaved: (String val) {
+                        //_password = val;
+                      },
+                              ),
                             ],
                           ),
                         ),
-                      );
-                    }
-                  
-                    CurvedAnimation _buildInputAnimation({double begin, double end}) {
-                      return new CurvedAnimation(
-                          parent: textInputAnimationController,
-                          curve: Interval(begin, end, curve: Curves.linear)
                       );
                     }
                   
@@ -178,5 +206,34 @@ Future<Null> _selectDate(BuildContext context) async{
                            
                         ));
                     }
+// bool _value1 = false;
+  bool _autoValidate = false;
+ void _validateInputs() {
+    if (_formKey.currentState.validate()) {
+      //    If all data are correct then save data to out variables
+      _formKey.currentState.save();
+      //save user in the database
+      CritereSelect.course=1;
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        GetHoraireAller()));
+    } else {
+      //    If all data are not valid then start auto validation.
+      setState(() {
+        _autoValidate = true;
+      });
+    }
+  }
+
+
+
+    String validateDestination(String value) {
+    if (CritereSelect.arrive==CritereSelect.depart)
+      return 'la destination doit être différente du depart';
+    else if (DateTime.parse(CritereSelect.datedep).isBefore(DateTime.now()))
+    return 'Cette date est déjà passée';
+    else
+      return null;
+  }
 
 }

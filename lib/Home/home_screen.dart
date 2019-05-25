@@ -1,11 +1,15 @@
 //import 'dart:io';
 
-import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
+// import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
+import 'package:flights_app/MyClasses/components.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/Administration/homeAdmin.dart';
-import 'package:flights_app/MyDesigns/colored_card_page.dart';
+import 'package:flights_app/MyDesigns/alertes.dart';
+import 'package:flights_app/MyDesigns/boardingPass.dart';
 import 'package:flights_app/MyDesigns/historiquePast.dart';
+import 'package:flights_app/MyDesigns/menuParam.dart/menuAproposConf.dart';
+import 'package:flights_app/MyDesigns/menuParam.dart/menuAproposDesc.dart';
 import 'package:flights_app/MyDesigns/tab_aller_retour.dart';
 //import 'package:flights_app/home_page.dart';
 import 'package:flights_app/login_signup_screens/login_screen.dart';
@@ -14,6 +18,7 @@ import 'package:flights_app/login_signup_screens/profile.dart';
 //import 'package:flights_app/myCompteMoney/first_page.dart';
 import 'package:flights_app/myCompteMoney/pass_code_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 //import 'package:percent_indicator/linear_percent_indicator.dart';
 
 //void main() => runApp(HomeScreen());
@@ -43,7 +48,6 @@ import 'package:flutter/material.dart';
 //}
 ////
 class MyHomePageScreen extends StatefulWidget {
-
   @override
   HomeScreen createState() => HomeScreen();
 }
@@ -78,15 +82,23 @@ class HomeScreen extends State<MyHomePageScreen> {
                       Icons.chat,
                       color: Colors.white,
                     ),
-                    onPressed: () {}),
-                new CircleAvatar(
-                  radius: 8.0,
-                  backgroundColor: Colors.blue,
-                  child: new Text(
-                    "0",
-                    style: new TextStyle(color: Colors.white, fontSize: 12.0),
-                  ),
-                )
+                    onPressed: () {
+                      Navigator.of(context).push(
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return new MyAlert();
+                      },
+                    ),
+                  );
+                    }),
+                // new CircleAvatar(
+                //   radius: 8.0,
+                //   backgroundColor: Colors.blue,
+                //   child: new Text(
+                //     "0",
+                //     style: new TextStyle(color: Colors.white, fontSize: 12.0),
+                //   ),
+                // )
               ],
             )
           ],
@@ -98,17 +110,16 @@ class HomeScreen extends State<MyHomePageScreen> {
                 accountName: new Text('${PubCon.userName}'),
                 accountEmail: new Text('${PubCon.userNomComplet}'),
                 currentAccountPicture: new GestureDetector(
-                  child: new CircleAvatar(
-                    backgroundColor: Colors.lightBlue,
-                    // backgroundImage: new NetworkImage(PubCon.userImage == ''
-                    //         ? null
-                    //         : PubCon.cheminPhp + PubCon.userImage),
-                    child: new Icon(
-                      Icons.person,
-                      color: Colors.white,
+                    child: Componentss.manageImage(context, PubCon.userImage)
+                    // new CircleAvatar(
+                    //   backgroundColor: Colors.lightBlue,
+                    // child: new Icon(
+                    //   Icons.person,
+                    //   color: Colors.white,
+                    // ),
+
+                    // ),
                     ),
-                  ),
-                ),
                 decoration: new BoxDecoration(
                   color: Colors.blue,
                 ),
@@ -135,7 +146,7 @@ class HomeScreen extends State<MyHomePageScreen> {
                   );
                 },
                 child: new ListTile(
-                  title: new Text('Mes billes',
+                  title: new Text('Mes billets',
                       style: new TextStyle(color: Colors.blue)),
                   leading: new Icon(
                     Icons.call_to_action,
@@ -145,16 +156,13 @@ class HomeScreen extends State<MyHomePageScreen> {
               ),
               new InkWell(
                 onTap: () {
-
-Navigator.of(context).push(
+                  Navigator.of(context).push(
                     new MaterialPageRoute(
                       builder: (BuildContext context) {
                         return new HistoriquePass();
                       },
                     ),
                   );
-
-
                 },
                 child: new ListTile(
                   title: new Text('Historique de Voyage',
@@ -166,7 +174,15 @@ Navigator.of(context).push(
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    new MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return new MyAlert();
+                      },
+                    ),
+                  );
+                },
                 child: new ListTile(
                   title: new Text('Alert',
                       style: new TextStyle(color: Colors.blue)),
@@ -180,9 +196,10 @@ Navigator.of(context).push(
                 onTap: () {},
                 child: new ListTile(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return PassCodeScreen();
-              }));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PassCodeScreen();
+                    }));
                   },
                   title: new Text('Mon Compte smart',
                       style: new TextStyle(color: Colors.blue)),
@@ -219,30 +236,54 @@ Navigator.of(context).push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return CustomGiftCardPage();
+                        return MenuAproposDesc();
                       },
                     ),
                   );
                 },
                 child: new ListTile(
-                  title: new Text('Apropos de SmartTicket',
+                  title: new Text('Description SmartTicket',
                       style: new TextStyle(color: Colors.blue)),
                   leading: new Icon(
-                    Icons.settings,
+                    Icons.info,
                     color: Colors.lightBlue,
                   ),
                 ),
               ),
               new InkWell(
                 onTap: () {
-                  if(PubCon.userPrivilege=="" || PubCon.userPrivilege=='0' || PubCon.userPrivilege==null){
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LoginScreen(),
-                          fullscreenDialog: true));
-                   } else{
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeAdmin()));}
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return MenuAproposConf();
+                      },
+                    ),
+                  );
+                },
+                child: new ListTile(
+                  title: new Text('Termes de Confidentialité',
+                      style: new TextStyle(color: Colors.blue)),
+                  leading: new Icon(
+                    Icons.list,
+                    color: Colors.lightBlue,
+                  ),
+                ),
+              ),
+              new InkWell(
+                onTap: () {
+                  if (PubCon.userPrivilege == "" ||
+                      PubCon.userPrivilege == '0' ||
+                      PubCon.userPrivilege == null) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                            fullscreenDialog: true));
+                  } else {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomeAdmin()));
+                  }
 //Accueil Administration
                 },
                 child: new ListTile(
@@ -269,16 +310,19 @@ Navigator.of(context).push(
                   ),
                 ),
               ),
-              
               new InkWell(
                 onTap: () {
-                  MyPreferences _myPreferences=MyPreferences();
-                  _myPreferences.automatic=false;
-                  Navigator.pop(context);
+                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                 },
+                // {
+                //   // MyPreferences _myPreferences=MyPreferences();
+                //   // _myPreferences.automatic=false;
+
+                //   Navigator.pop(context);
+                // },
                 child: new ListTile(
                   title: new Text(
-                    'Deconnexion',
+                    'Fermer',
                     style: new TextStyle(color: Colors.red),
                   ),
                   leading: new Icon(
@@ -286,7 +330,6 @@ Navigator.of(context).push(
                     color: Colors.red,
                   ),
                 ),
-                
               ),
               Divider(),
             ],
@@ -366,24 +409,21 @@ Navigator.of(context).push(
           setState(() {
             _selectedIndex = index;
             if (_selectedIndex == 0) {
-              CritereSelect.refCatEngin=1;
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
-            }
-            else if (_selectedIndex == 1) {
-              CritereSelect.refCatEngin=2;
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
-            }
-            else if (_selectedIndex == 2) {
-              CritereSelect.refCatEngin=3;
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
-            }
-            else if (_selectedIndex == 3) {
-              CritereSelect.refCatEngin=4;
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TabAllerRetour()));
+              CritereSelect.refCatEngin = 1;
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TabAllerRetour()));
+            } else if (_selectedIndex == 1) {
+              CritereSelect.refCatEngin = 2;
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TabAllerRetour()));
+            } else if (_selectedIndex == 2) {
+              CritereSelect.refCatEngin = 3;
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TabAllerRetour()));
+            } else if (_selectedIndex == 3) {
+              CritereSelect.refCatEngin = 4;
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => TabAllerRetour()));
             }
           });
           print("tapped");

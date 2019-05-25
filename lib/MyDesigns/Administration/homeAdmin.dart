@@ -1,6 +1,9 @@
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/Administration/categorie_charge.dart';
 import 'package:flights_app/MyDesigns/Administration/engin_charge.dart';
+import 'package:flights_app/MyDesigns/Administration/publicationAdm.dart';
+import 'package:flights_app/MyDesigns/Administration/updateAgence.dart';
+import 'package:flights_app/MyDesigns/scanQR.dart';
 import 'package:flutter/material.dart';
 
 class HomeAdmin extends StatefulWidget {
@@ -45,7 +48,9 @@ Widget buildGrid(BuildContext context) {
           setState(() {
             _selectedIndex = index;
             if (_selectedIndex == 0) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Categories(menu: "agence")));
+              //Navigator.push(context, MaterialPageRoute(builder: (context) => Categories(menu: "agence")));
+              
+              Navigator.push(context, MaterialPageRoute(builder: (context) => UpdateAgence()));
             }
             else if (_selectedIndex == 1) {
               Navigator.push(context, MaterialPageRoute(builder: (context) => Categories(menu: "engin")));
@@ -134,17 +139,79 @@ Widget buildGrid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        centerTitle: true,
         iconTheme: IconThemeData(color: Colors.blue),
         title: Text("${PubCon.userNomComplet}",style: TextStyle(color: Colors.blueAccent),),
         actions: <Widget>[
+          new Stack(
+              alignment: Alignment.topLeft,
+              children: <Widget>[
+                new IconButton(
+                    icon: new Icon(
+                      Icons.chat,
+                      color: Colors.blue,
+                    ),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => MyPublication()));
+                    }),
+                // new CircleAvatar(
+                //   radius: 8.0,
+                //   backgroundColor: Colors.blue,
+                //   child: new Text(
+                //     "0",
+                //     style: new TextStyle(color: Colors.white, fontSize: 12.0),
+                //   ),
+                // )
+              ],
+            ),
           IconButton(
-            icon: Icon(Icons.exit_to_app), onPressed: () {
+            icon: Icon(Icons.exit_to_app,color: Colors.red,), onPressed: () {
+              PubCon.userPrivilege='0';
               Navigator.pop(context);
             },
           )
         ],
         ),
+//============================================================================================================
+bottomNavigationBar: Card(
+        
+        child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Container(
+                              height: 55,
+                              width: MediaQuery.of(context).size.width / 1.0,
+                              decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.all(Radius.circular(16))),
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    //aller à Scanner 
+                                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => QRscanner()));
+                                                                  },
+                                                                  child: Row(
+                                                                    children: <Widget>[
+                                                                      Expanded(
+                                                                        flex: 2,
+                                                                        child: Text(
+                                                                          'Scanner QrCode',
+                                                                          style: TextStyle(
+                                                                              color: Colors.white, fontWeight: FontWeight.normal,fontSize:MediaQuery.of(context).size.height/25 ),textAlign: TextAlign.center,
+                                                                        ),
+                                                                      ),
+                                                                      Expanded(child: Icon(Icons.scanner,textDirection: TextDirection.ltr,color: Colors.white,size: 44.0,))
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              
+                                                            ),
+                                                      ),
+      ),
+
+
+
+
+
       body: ListView(
           children: <Widget>[
             Stack(

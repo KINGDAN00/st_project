@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flights_app/MyClasses/clsCritereSelect.dart';
 import 'package:flights_app/MyClasses/clsReservation.dart';
+import 'package:flights_app/MyClasses/components.dart';
 import 'package:flights_app/MyClasses/det.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/class_to_select.dart';
@@ -26,6 +27,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
   var _agenceID=[""];
   var _horaireID=[""];
   var _idEngin = [""];
+  var _logoAg=[""];
   //tableau pour les details:
   //var _designClasse=[""];
   //var _prixClasse=[""];
@@ -42,6 +44,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
     //print(response.body);
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
+      if(mounted)
       setState(() {
         _enginAller=["Aucun resultat"];
       });
@@ -66,6 +69,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
         _idEngin.add(datauser[h]['refEnginAller'].toString());
         _agenceID.add(datauser[h]['codeAgenceAller'].toString());
         _horaireID.add(datauser[h]['codeHoraireAller'].toString());
+        _logoAg.add(datauser[h]['logoAgenceAller'].toString());
               }
             });}
           }
@@ -115,6 +119,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
             Detail.designClasse.clear();
             Detail.prixClasse.clear();
             //clearItems();
+            if(mounted)
             setState(() {
               for (int h = 0; h < datauser.length; h++) {
                 var designation = datauser[h]['designationClasse'].toString();
@@ -212,10 +217,11 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
                                 ],
                               ),
                               ListTile(
-                                title: Text("${_enginAller[index]}"),
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.blue,
-                                ),
+                                title: Text("${_enginAller[index]}",style: TextStyle(color: Colors.blue),),
+                                leading: Componentss.manageImage(context,"${_logoAg[index]}")
+                                // CircleAvatar(
+                                //   backgroundColor: Colors.blue,
+                                // ),
                               ),
       
                               Row(
@@ -297,5 +303,6 @@ _depRetour.clear();
   _idEngin.clear();
   _agenceID.clear();
   _horaireID.clear();
+  _logoAg.clear();
         }
 }

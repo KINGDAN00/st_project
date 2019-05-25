@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flights_app/Home/home_screen.dart';
+import 'package:flights_app/MyClasses/clsAgence.dart';
 //import 'package:flights_app/MyClasses/SharedPref/myPreferences.dart';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/Administration/homeAdmin.dart';
@@ -17,8 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final List<String> _items = ['Client','Agence'].toList();
-  String _selection;
+  
 //================SHARED PREFERENCES=====================================
 //MyPreferences _myPreferences=MyPreferences();
 bool auto;
@@ -31,6 +31,35 @@ String user1,password1;
   String _password;
   TextEditingController user = new TextEditingController();
   TextEditingController pass = new TextEditingController();
+Future<List> _getLevelUser() async {
+    final response = await http.post(PubCon.cheminPhp + "GetNiveauUser.php",
+        body: {"username": user.text, "passwordUser": pass.text});
+    //print(response.body);
+    var datauser = json.decode(response.body);
+    if (datauser.length == 0) {
+      setState(() {
+        PubCon.userPrivilege =''; 
+      });
+      Fluttertoast.showToast(
+          msg: 'Une Erreur est survenue',
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.white,
+          textColor: Colors.red);
+    } else {
+      Fluttertoast.showToast(
+          msg: 'connexion...',
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.white,
+          textColor: Colors.black);
+      setState(() {
+        PubCon.userPrivilege =datauser[0]['niveauUser']; 
+      });
+          
+    }
+    return datauser;
+  }
+
+
   Future<List> _login() async {
     final response = await http.post(PubCon.cheminPhp + "login.php",
         body: {"usernameClient": user.text, "passwordClient": pass.text});
@@ -53,7 +82,8 @@ String user1,password1;
         PubCon.userNomComplet = datauser[0]['nomClient'];
         PubCon.userPass = datauser[0]['passwordClient'];
         PubCon.userName = datauser[0]['usernameClient'];
-        PubCon.userPrivilege = datauser[0]['privilegeClient'];
+        //PubCon.userPrivilege = datauser[0]['privilegeClient'];
+        PubCon.userPrivilege = '0';
         PubCon.userImage = datauser[0]['photoClient'];
       });
       // _myPreferences.automatic=auto;
@@ -64,16 +94,19 @@ String user1,password1;
       // _myPreferences.privilege=PubCon.userPrivilege;
       // _myPreferences.image=PubCon.userImage;
       // _myPreferences.commit();
-      if(PubCon.userPrivilege=='0'){
       Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePageScreen()));
-          }else{
-          //appel accueil administration HomeAdmin
-          Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        HomeAdmin()));
-          }
     }
     return datauser;
+  }
+  //testLogin()
+  void testLogin(){
+    _getLevelUser();
+if(PubCon.userPrivilege=='0'){
+  _login();
+      
+          }else if(PubCon.userPrivilege=='1'){
+            _loginAgence();
+          }
   }
 //=====================log Agence=============
 Future<List> _loginAgence() async {
@@ -100,6 +133,8 @@ Future<List> _loginAgence() async {
         PubCon.userName = datauser[0]['usersessionAgence'];
         PubCon.userPrivilege = '1';
         PubCon.userImage = datauser[0]['logoAgence'];
+        AgenceCls.adresseMail=datauser[0]['email'];
+        AgenceCls.numTel=datauser[0]['contactAgence'];
       });
           //appel accueil administration HomeAdmin
           Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -130,10 +165,7 @@ Future<List> _loginAgence() async {
 
   @override
   Widget build(BuildContext context) {
-    final dropdownMenuOptions = _items
-        .map((String item) =>
-            new DropdownMenuItem<String>(value: item, child: new Text(item)))
-        .toList();
+    
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
@@ -270,27 +302,7 @@ Future<List> _loginAgence() async {
                     //     FocusScope.of(context).requestFocus(myFocusNode);
                     //   },
                     // ),
-                    Divider(),
-
-                    Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: new DropdownButtonFormField(
-                            value: _selection,
-                            items: dropdownMenuOptions,
-                            onChanged: (s) {
-                              setState(() {
-                                _selection = s;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              fillColor: Colors.white,
-                              filled: true,
-                             border: new OutlineInputBorder(
-                        borderRadius: new BorderRadius.circular(20.0)),
-                              hintText: 'Quel est votre statut?',
-                            ),
-                          ),
-                        ),
+                   
                     Divider(),
                     TextFormField(
                       validator: (value) {
@@ -380,9 +392,8 @@ Future<List> _loginAgence() async {
                       child: GestureDetector(
                           onTap: () {
                             print("pressed");
-                            if(_selection=='Agence'){_loginAgence();} 
-                            else{
-                            _login();}
+                            //on test le niveau et on connect dans la meme fx
+                            testLogin();
                            // _validateInputs();
                             if (_autoValidate) {
                               

@@ -1,6 +1,5 @@
 
 import 'dart:ui';
-import 'package:flights_app/MyDesigns/colored_card_page.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +10,9 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DetailBoarding extends StatefulWidget {
-  final BilletsFull refReservation;
+  final String refDetReserv;
 
-  const DetailBoarding({Key key, this.refReservation}) : super(key: key);
+  const DetailBoarding({Key key, this.refDetReserv}) : super(key: key);
   @override
   _DetailBoardingState createState() => _DetailBoardingState();
 }
@@ -25,7 +24,7 @@ class _DetailBoardingState extends State<DetailBoarding> {
 @override
 void initState() { 
   super.initState();
-  _dataString=widget.refReservation.refReservation.toString();
+  _dataString=widget.refDetReserv.toString();
 }
   GlobalKey globalKey = new GlobalKey();
   String _dataString = "Hello from this QR";
@@ -40,11 +39,11 @@ void initState() {
         backgroundColor: Colors.white,
         title: Text("Qr_Code",style: TextStyle(color: Colors.black),),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed:(){} 
-            //_captureAndSharePng,
-          )
+          // IconButton(
+          //   icon: Icon(Icons.share),
+          //   onPressed:(){} 
+          //   //_captureAndSharePng,
+          // )
         ],
       ),
      body: _contentWidget()

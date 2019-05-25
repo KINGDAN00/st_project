@@ -41,7 +41,9 @@ class CategoriesState extends State<Categories> {
                   return Text('${snapshot.error}');
                 }
 
-                return new CircularProgressIndicator();
+                return Align(
+                  alignment: Alignment.center,
+                  child: new CircularProgressIndicator());
               })),
     );
   }
@@ -69,6 +71,7 @@ class CustomListView extends StatelessWidget {
   final String menu;
   CustomListView(this.billetFull, this.menu);
   Widget build(context) {
+    
     return ListView.builder(
         itemCount: billetFull.length,
         itemBuilder: (context, int currentIndex) {

@@ -1,19 +1,21 @@
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/detailBoarding.dart';
-import 'package:flights_app/myCompteMoney/widgets/colored_card.dart';
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' show get;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class BoardingPass extends StatefulWidget {
+class BoardingPassPers extends StatefulWidget {
+  final String refReservation;
+
+  const BoardingPassPers({Key key, this.refReservation}) : super(key: key);
   @override
-  BoardingPassState createState() {
-    return new BoardingPassState();
+  BoardingPassPersState createState() {
+    return new BoardingPassPersState();
   }
 }
 
-class BoardingPassState extends State<BoardingPass> {
+class BoardingPassPersState extends State<BoardingPassPers> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class BoardingPassState extends State<BoardingPass> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.blue,
-        title: Text("Boarding_Pass"),
+        title: Text("Detail Boarding_Pass"),
       ),
       body: 
       //ListView(
@@ -119,18 +121,22 @@ class BoardingPassState extends State<BoardingPass> {
       //       height: 20,
       //     ),
           new Container(
-          child: new FutureBuilder<List<BilletsFull>>(
-              future: downloadJSON(),
+          child: new FutureBuilder<List<BilletsPersFull>>(
+              future: downloadJSON(widget.refReservation),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  List<BilletsFull> billetsFull = snapshot.data;
+                  List<BilletsPersFull> billetsFull = snapshot.data;
 
                   return CustomListView(billetsFull);
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
 
-                return new CircularProgressIndicator();
+                return new Align(
+  
+                          alignment: Alignment.center,
+  
+                          child: new CircularProgressIndicator());
               })),
           
        
@@ -175,40 +181,29 @@ class Constants {
   static const List<String> choices = <String>[Subscribe, Settings, SignOut];
 }
 
-class BilletsFull {
-  final String refReservation;
-  final String lieuDepart,
-      lieuArret,
-      heureDepart,
-      heureArrive,
-      nombrePersonne,
+class BilletsPersFull {
+  final String refDetReserv;
+  final String 
+      nomsPers,
       dateVoyage;
 
-  BilletsFull({
+  BilletsPersFull({
     Key key,
-    this.refReservation,
-    this.lieuDepart,
-    this.lieuArret,
-    this.heureDepart,
-    this.heureArrive,
-    this.nombrePersonne,
+    this.refDetReserv,
+    this.nomsPers,
     this.dateVoyage,
   });
-  factory BilletsFull.fromJson(Map<String, dynamic> jsonData) {
-    return BilletsFull(
-        refReservation: jsonData['refRservation'],
-        lieuDepart: jsonData['LieuDepart'],
-        lieuArret: jsonData['LieuArret'],
-        heureDepart: jsonData['heureDepart'],
-        heureArrive: jsonData['heureArrive'],
-        nombrePersonne: jsonData['nombrePersonne'],
+  factory BilletsPersFull.fromJson(Map<String, dynamic> jsonData) {
+    return BilletsPersFull(
+        refDetReserv: jsonData['codeDetailRes'],
+        nomsPers: jsonData['nomClient_billet']+' '+jsonData['LastNameClient_billet'],
         dateVoyage: jsonData['dateVoyage'],
         );
   }
 }
 
 class CustomListView extends StatelessWidget {
-  final List<BilletsFull> billetFull;
+  final List<BilletsPersFull> billetFull;
   CustomListView(this.billetFull);
   Widget build(context) {
     return ListView.builder(
@@ -218,7 +213,7 @@ class CustomListView extends StatelessWidget {
         });
   }
 
-  Widget createViewItem(BilletsFull billetFull, BuildContext context) {
+  Widget createViewItem(BilletsPersFull billetFull, BuildContext context) {
     return new ListTile(
       title: new Card(
         elevation: 3.0,
@@ -238,41 +233,14 @@ class CustomListView extends StatelessWidget {
                               child:Text("${billetFull.dateVoyage}",style: TextStyle(color: Colors.blue),textAlign: TextAlign.center,) ,
                             ),
                             Expanded(
-                              child: Text("# ${billetFull.refReservation}",style: TextStyle(color: Colors.blue),textAlign: TextAlign.center,),
+                              child: Text("# ${billetFull.refDetReserv}",style: TextStyle(color: Colors.blue),textAlign: TextAlign.center,),
                             )
                           ],
                         ),
                         Divider(),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Expanded(
-      child: Column(
-        children: <Widget>[
-              Text('${billetFull.lieuDepart}', style: TextStyle(fontSize: 16.0),),
-              SizedBox(height: 8.0,),
-              Text('${billetFull.heureDepart}', style: TextStyle(color: Colors.grey, fontSize: 16.0),)
-        ],
-      ),
-    ),
-    Icon(Icons.navigate_next),
-                            //Text("--->"),
-Expanded(
-      child: Column(
-        children: <Widget>[
-              
-              Text('${billetFull.lieuArret}', style: TextStyle(fontSize: 16.0),),
-              SizedBox(height: 8.0,),
-              Text('${billetFull.heureArrive}', style: TextStyle(color: Colors.grey, fontSize: 16.0),)
-        ],
-      ),
-    ),
-
-                          ],
-                        ),
+                        
                         ListTile(
-                          title: Text("${billetFull.nombrePersonne} passager(s)",style: TextStyle(color: Colors.blue),),
+                          title: Text("${billetFull.nomsPers}",style: TextStyle(color: Colors.blue),),
                           leading: Icon(Icons.person)
                         )
                       ],
@@ -287,7 +255,7 @@ Expanded(
         //
         var route = new MaterialPageRoute(
           builder: (BuildContext context) =>
-              new DetailBoarding(refReservation: billetFull
+              new DetailBoarding(refDetReserv: billetFull.refDetReserv
               ),
         );
 
@@ -297,17 +265,16 @@ Expanded(
   }
 }
 
-Future<List<BilletsFull>> downloadJSON() async {
-  //final jsonEndpoint = PubCon.cheminPhp + "GetHistoriqueVoyageFuture.php";
-  final response = await http.post(PubCon.cheminPhp + "GetHistoriqueVoyageFuture.php",body:{
-    "refCompte":PubCon.userId.toString()
+Future<List<BilletsPersFull>> downloadJSON(String refReservation1) async {
+  final response = await http.post(PubCon.cheminPhp + "GetDetailSelonReservation.php",body:{
+    "refRservation":refReservation1
   });
   //var data = json.decode(response.body);
   if (response.statusCode == 200) {
     //if(data.length != 0){
     List billetsFull = json.decode(response.body);
     return billetsFull
-        .map((billetsFull) => new BilletsFull.fromJson(billetsFull))
+        .map((billetsFull) => new BilletsPersFull.fromJson(billetsFull))
         .toList();
   } else {
     throw Exception('Nous n\'avons pas pu telecharger toutes les donnees.');
