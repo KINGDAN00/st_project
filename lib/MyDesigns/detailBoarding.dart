@@ -10,9 +10,9 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DetailBoarding extends StatefulWidget {
-  final String refDetReserv;
+  final String refDetReserv,firstName,dateVoyage;
 
-  const DetailBoarding({Key key, this.refDetReserv}) : super(key: key);
+  const DetailBoarding({Key key, this.refDetReserv, this.firstName, this.dateVoyage}) : super(key: key);
   @override
   _DetailBoardingState createState() => _DetailBoardingState();
 }
@@ -25,11 +25,16 @@ class _DetailBoardingState extends State<DetailBoarding> {
 void initState() { 
   super.initState();
   _dataString=widget.refDetReserv.toString();
+  _textFirstName.text=widget.firstName.toString();
+  _textDateVoyage.text=widget.dateVoyage.toString();
+
 }
   GlobalKey globalKey = new GlobalKey();
   String _dataString = "Hello from this QR";
   String _inputErrorText;
   final TextEditingController _textController =  TextEditingController();
+  TextEditingController _textFirstName =  TextEditingController();
+  TextEditingController _textDateVoyage =  TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +80,35 @@ void initState() {
       color: const Color(0xFFFFFFFF),
       child:  Column(
         children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0
+            ),
+            child: Card(
+              elevation: 3.0,
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    textAlign: TextAlign.center,
+                    enabled: false,
+                      controller: _textFirstName,
+                      decoration:  InputDecoration(
+                        hintText: "Name:",
+                        labelText: 'Name',
+                        errorText: _inputErrorText,
+                      ),),
+                      TextField(
+                        textAlign: TextAlign.center,
+                        enabled: false,
+                      controller: _textDateVoyage,
+                      decoration:  InputDecoration(
+                        hintText: "Date de Voyage",
+                        labelText: "Date Voyage",
+                        errorText: _inputErrorText,
+                      ),),
+                ],
+              ),
+            )),
+            Divider(),
           // Padding(
           //   padding: const EdgeInsets.only(
           //     top: _topSectionTopPadding,

@@ -28,7 +28,8 @@ class _MyClassesState extends State<MyClasses> {
   var _designClasse = [""];
   var _prixClasse = [""];
   var _detailID = [""];
-  Future<List> _getCode() async {
+
+ Future<List> _getCode() async {
     final response =
         await http.post(PubCon.cheminPhp + "GetidEncours.php", body: {
     });
@@ -36,17 +37,18 @@ class _MyClassesState extends State<MyClasses> {
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
     } else {
-      if(mounted)
+      if(mounted){
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
          
           ClsReservation.idReservation =datauser[h]['IdEncours'].toString() == null ? 0 : int.parse(datauser[h]['IdEncours'].toString());
         }
-      });
+      });}
     }
     return datauser;
-  }
-  Future<List> _getCode2() async {
+}
+
+ Future<List> _getCode2() async {
     final response =
         await http.post(PubCon.cheminPhp + "GetidEncours.php", body: {
     });
@@ -63,10 +65,10 @@ class _MyClassesState extends State<MyClasses> {
       });
     }
     return datauser;
-  }
+}
   Future<List> _charger() async {
     final response = await http.post(PubCon.cheminPhp + "GetDetailEngin.php",
-        body: {"refEngin": ClsReservation.idEnginToSelect.toString()});
+        body: {"refEngin": ClsReservation.idEnginToSelect});
     //print(response.body);
     var datauser = json.decode(response.body);
     if (datauser.length == 0) {
@@ -76,43 +78,44 @@ class _MyClassesState extends State<MyClasses> {
       _prixClasse.clear();
       _detailID.clear();
       //clearItems();
-      if(mounted)
+      if(mounted){
       setState(() {
         for (int h = 0; h < datauser.length; h++) {
-          var designation = datauser[h]['designationClasse'].toString();
-          var prix = datauser[h]['prixClasse'].toString();
-          var idDetail = datauser[h]['codeDetailEngin'].toString();
-          _designClasse.add(designation);
-          _prixClasse.add(prix);
-          _detailID.add(idDetail);
+          _designClasse.add(datauser[h]['designationClasse'].toString());
+          _prixClasse.add(datauser[h]['prixClasse'].toString());
+          _detailID.add(datauser[h]['codeDetailEngin'].toString());
         }
-      });
+      });}
     }
     return datauser;
   }
 
   //fx insertReservation
   Future addReservation() async {
+    try{
     var uri = Uri.parse(PubCon.cheminPhp + "insertReservation.php");
     var request = new http.MultipartRequest("POST", uri);
-    request.fields['refCompte'] = ClsReservation.refCompte;
+    request.fields['refCompte'] =ClsReservation.refCompte;
     request.fields['refAgence'] = ClsReservation.refAgence;
     request.fields['refHoraire'] = ClsReservation.refHoraire;
     request.fields['refDetailEngin'] = ClsReservation.refDetailEngin;
     request.fields['dateVoyage'] = ClsReservation.dateVoyage;
+    request.fields['usersession']=PubCon.userAgent;
     var response = await request.send();
     if (response.statusCode == 200) {
-      // if(course==1)_getCode();
-      // else if(course==2) _getCode2();
+      // if(CritereSelect.course==1)_getCode();
+      // else if(CritereSelect.course==2) {_getCode();_getCode2();}
       print("Enregistrement reussi ${ClsReservation.idReservation}");
-      Fluttertoast.showToast(msg:'Enregistré',toastLength:Toast.LENGTH_LONG,
+      Fluttertoast.showToast(msg:'Enregistré ${ClsReservation.idReservation}',toastLength:Toast.LENGTH_LONG,
                               backgroundColor:Colors.white,textColor:Colors.black);
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              IdentitePassager()));
+                      
       
     } else {
       print("Echec d'enregistrement");
+    }
+    }catch(ex){
+      Fluttertoast.showToast(msg:'$ex',toastLength:Toast.LENGTH_LONG,
+                              backgroundColor:Colors.white,textColor:Colors.black);
     }
   }
 
@@ -143,6 +146,9 @@ class _MyClassesState extends State<MyClasses> {
                       //appel fx insert Reservation
                       addReservation();
                       _getCode();
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              IdentitePassager(code1: ClsReservation.idReservation,)));
                       
                     } else if (CritereSelect.course == 2) {
                       ClsReservation.dateVoyage = CritereSelect.datedep;
@@ -154,6 +160,9 @@ class _MyClassesState extends State<MyClasses> {
                       addReservation();
                       _getCode2();
                       //passer a l'identification des passagers
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              IdentitePassager(code1: ClsReservation.idReservation,code2: ClsReservation.idReservation2,)));
                     }
                   },
                 ),

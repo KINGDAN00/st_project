@@ -3,15 +3,14 @@ import 'dart:convert';
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:http/http.dart' as http;
 
-class QRscanner extends StatefulWidget {
+class CodeArgent extends StatefulWidget {
   @override
-  _QRscannerState createState() => _QRscannerState();
+  _CodeArgentState createState() => _CodeArgentState();
 }
 
-class _QRscannerState extends State<QRscanner> {
+class _CodeArgentState extends State<CodeArgent> {
   int diff;
   TextEditingController nomClient_billet = new TextEditingController(),
       lastNameClient_billet = new TextEditingController(),
@@ -21,6 +20,7 @@ class _QRscannerState extends State<QRscanner> {
       dateVoyage = new TextEditingController(),
       lieuArret = new TextEditingController(),
       lieuDepart = new TextEditingController(),
+      codeDetailReserv = new TextEditingController(),
       heureDepart = new TextEditingController();
   int resQr;
   Widget identite() {
@@ -146,11 +146,8 @@ Divider(),
   Future<String> _codeString;
   Widget getTest(int _diff) {
     if (_diff == null) {
-      return new Align(
-  
-                          alignment: Alignment.center,
-  
-                          child: Text("...En attente du scan..."));
+      return new Center(
+                          child: Text("...Aucun elemenent..."));
     } else {
       if (_diff >= 0) {
         return Column(
@@ -214,41 +211,49 @@ Divider(),
         child: ListView(
           //mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new FutureBuilder<String>(
-              future: _codeString,
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (snapshot.data == null) {
-                } else {
-                  _charger(snapshot.data);
-                }
-                return Text(
-                    snapshot.data != null ? '' : 'Scanner le Qr_Code...');
-              },
-            ),
+            // new FutureBuilder<String>(
+            //   future: _codeString,
+            //   builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            //     if (snapshot.data == null) {
+            //     } else {
+            //       _charger(snapshot.data);
+            //     }
+            //     return Text(
+            //         snapshot.data != null ? '' : 'Scanner le Qr_Code...');
+            //   },
+            // ),
             //Text("$diff"),
+            TextFormField(
+              controller: codeDetailReserv,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: "Entrer le code",
+                labelText: "Code"
+              ),
+            ),
+            RaisedButton(
+              child:Text("VERIFIER"),
+              onPressed: (){
+
+              _charger(codeDetailReserv.text);
+            }),
+           Divider(),
             getTest(diff)
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: scannerQR,
-        tooltip: 'Scanner',
-        child: Icon(Icons.scanner),
-      ),
+      // floatingActionButton: new FloatingActionButton(
+      //   onPressed: (){getCodeArgent(codeDetailReserv.text,diff);},
+      //   tooltip: 'Scanner',
+      //   child: Icon(Icons.scanner),
+      // ),
     );
   }
 
-  void scannerQR() {
+  Widget getCodeArgent(String codeDet,int dif) {
     try {
-      setState(() {
-        _codeString = new QRCodeReader()
-            .setAutoFocusIntervalInMs(200)
-            .setForceAutoFocus(true)
-            .setTorchEnabled(true)
-            .setHandlePermissions(true)
-            .setExecuteAfterPermissionGranted(true)
-            .scan();
-      });
+      _charger(codeDet);
+      getTest(dif);
     } catch (e) {}
   }
 }

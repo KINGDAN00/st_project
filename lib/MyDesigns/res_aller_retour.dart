@@ -28,6 +28,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
   var _horaireID=[""];
   var _idEngin = [""];
   var _logoAg=[""];
+  var _nomAgence=[""];
   //tableau pour les details:
   //var _designClasse=[""];
   //var _prixClasse=[""];
@@ -70,6 +71,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
         _agenceID.add(datauser[h]['codeAgenceAller'].toString());
         _horaireID.add(datauser[h]['codeHoraireAller'].toString());
         _logoAg.add(datauser[h]['logoAgenceAller'].toString());
+        _nomAgence.add(datauser[h]['nomAgenceAller'].toString());
               }
             });}
           }
@@ -119,7 +121,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
             Detail.designClasse.clear();
             Detail.prixClasse.clear();
             //clearItems();
-            if(mounted)
+            if(mounted){
             setState(() {
               for (int h = 0; h < datauser.length; h++) {
                 var designation = datauser[h]['designationClasse'].toString();
@@ -127,7 +129,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
               Detail.designClasse.add(designation);
                Detail.prixClasse.add(prix);
               }
-           });
+           });}
           }
           return datauser;
         }
@@ -195,6 +197,7 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
                                   Expanded(
             child: Column(
               children: <Widget>[
+                
                     Text('${_depAller[index]}', style: TextStyle(fontSize: 15.0),),
                     SizedBox(height: 8.0,),
                     Text('${_heureDepAller[index]}', style: TextStyle(color: Colors.grey, fontSize: 15.0),)
@@ -217,7 +220,8 @@ class _GetHoraireAllerRetourState extends State<GetHoraireAllerRetour> {
                                 ],
                               ),
                               ListTile(
-                                title: Text("${_enginAller[index]}",style: TextStyle(color: Colors.blue),),
+                                title: Text("Agence: \n"),
+                                subtitle: Text("${_enginAller[index]}",style: TextStyle(color: Colors.blue),),
                                 leading: Componentss.manageImage(context,"${_logoAg[index]}")
                                 // CircleAvatar(
                                 //   backgroundColor: Colors.blue,
@@ -304,5 +308,6 @@ _depRetour.clear();
   _agenceID.clear();
   _horaireID.clear();
   _logoAg.clear();
+  _nomAgence.clear();
         }
 }

@@ -53,7 +53,6 @@ void populateAg(){
 
   @override
   void dispose() {
-    // Clean up the focus node when the Form is disposed
     focusNode1.dispose();
     focusNode2.dispose();
     focusNode3.dispose();
@@ -291,12 +290,12 @@ void populateAg(){
                     onSaved: (String val) {
                       _password = val;
                     },
-                    focusNode: focusNode3,
+                    //focusNode: focusNode3,
                     obscureText: true,
                     controller: cpassword,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 16, color: Colors.black),
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       labelText: "Password *",
                       contentPadding: new EdgeInsets.symmetric(

@@ -80,11 +80,19 @@ Future<List> _getLevelUser() async {
       setState(() {
         PubCon.userId = datauser[0]['codeCompte'];
         PubCon.userNomComplet = datauser[0]['nomClient'];
+        PubCon.userNomComplet = datauser[0]['prenom'];
         PubCon.userPass = datauser[0]['passwordClient'];
         PubCon.userName = datauser[0]['usernameClient'];
         //PubCon.userPrivilege = datauser[0]['privilegeClient'];
         PubCon.userPrivilege = '0';
         PubCon.userImage = datauser[0]['photoClient'];
+        PubCon.userSexe = datauser[0]['sexe'];
+        PubCon.userDateNaissance = datauser[0]['datenaissance'];
+        PubCon.userEmail = datauser[0]['email'];
+        PubCon.userNumeroPassport = datauser[0]['NumeroPasseport'];
+        PubCon.userCodePostale = datauser[0]['code_postal'];
+        PubCon.userNationalite = datauser[0]['Nationnalite'];
+        PubCon.userSolde = datauser[0]['Solde'];
       });
       // _myPreferences.automatic=auto;
       // _myPreferences.user=PubCon.userName;
@@ -94,7 +102,7 @@ Future<List> _getLevelUser() async {
       // _myPreferences.privilege=PubCon.userPrivilege;
       // _myPreferences.image=PubCon.userImage;
       // _myPreferences.commit();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePageScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePageScreen()));
     }
     return datauser;
   }
@@ -127,11 +135,12 @@ Future<List> _loginAgence() async {
           backgroundColor: Colors.white,
           textColor: Colors.black);
       setState(() {
-        PubCon.userIdAgence = datauser[0]['codeAgence'];
+        PubCon.userIdAgence = datauser[0]['refAgence'];
         PubCon.userNomComplet = datauser[0]['nomAgence'];
         PubCon.userPass = datauser[0]['passwordAgence'];
-        PubCon.userName = datauser[0]['usersessionAgence'];
-        PubCon.userPrivilege = '1';
+        PubCon.userName = datauser[0]['username'];
+        PubCon.userPrivilege = '1';//ici on prend le niveau 1 pour admin
+        //on test aussi le niveau a l'agence
         PubCon.userImage = datauser[0]['logoAgence'];
         AgenceCls.adresseMail=datauser[0]['email'];
         AgenceCls.numTel=datauser[0]['contactAgence'];

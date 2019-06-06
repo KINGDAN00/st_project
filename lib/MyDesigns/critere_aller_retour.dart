@@ -102,12 +102,15 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
               child: Row(
                 children: <Widget>[
                   
+Componentss.iconaddcons(context),
+Icon(Icons.arrow_right,color: Colors.blueAccent,),
+
                   Expanded(
                     child: TextField(
                       maxLines: 2,
                       controller: depart,
                       decoration: InputDecoration(
-                        icon: Componentss.iconaddcons(context),
+                        
                         //labelText: "Depart",
                         hintText: 'Depart:\n'+CritereSelect.depart.toString()
                       ),
@@ -120,7 +123,7 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                       }
                     ),
                   ),
-                  Icon(Icons.arrow_right,color: Colors.blueAccent,),
+                  
                 ],
               ),
             ),
@@ -129,15 +132,17 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
               child: Row(
                 children: <Widget>[
                   
+Icon(Icons.arrow_right,color: Colors.blueAccent,),
+                  Componentss.iconaddcons(context),
                   Expanded(
                     child: TextField(
                       maxLines: 2,
                       controller: arrive,
                       decoration: InputDecoration(
                         //icon: Icon(Icons.flight_land, color: Colors.blue),
-                        icon: Componentss.iconaddcons(context),
+                        
                         //labelText: "Destination",
-                        hintText: 'destination:\n ${CritereSelect.arrive}'
+                        hintText: 'Destination:\n ${CritereSelect.arrive}'
                       ),
                       onChanged:(text){
                       },
@@ -147,7 +152,7 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                       },
                     ),
                   ),
-                  Icon(Icons.arrow_left,color: Colors.blueAccent,),
+                  
                 ],
               ),
             ),

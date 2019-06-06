@@ -255,7 +255,7 @@ class CustomListView extends StatelessWidget {
         //
         var route = new MaterialPageRoute(
           builder: (BuildContext context) =>
-              new DetailBoarding(refDetReserv: billetFull.refDetReserv
+              new DetailBoarding(refDetReserv: billetFull.refDetReserv,firstName: billetFull.nomsPers,dateVoyage: billetFull.dateVoyage,
               ),
         );
 

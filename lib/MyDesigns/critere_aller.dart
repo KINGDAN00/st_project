@@ -27,7 +27,7 @@ DateTime date=DateTime.now();
 //   CritereSelect.datedep=f.format(date).toString();
 
 // }
-Future<Null> _selectDate(BuildContext context) async{
+void _selectDate(BuildContext context) async{
   final DateTime picked = await
   showDatePicker(
                     context: context,
@@ -69,8 +69,8 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
               child: Row(
                 children: <Widget>[
-                  Icon(Icons.arrow_right,color: Colors.blueAccent,),
                   Componentss.iconaddcons(context),
+                  Icon(Icons.arrow_right,color: Colors.blueAccent,),
                   
                   
                   Expanded(
@@ -100,8 +100,9 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
               padding: const EdgeInsets.fromLTRB(0.0, 0.0, 64.0, 8.0),
               child: Row(
                 children: <Widget>[
-                  Componentss.iconaddcons(context),
+                  
                   Icon(Icons.arrow_right,color: Colors.blueAccent,),
+                  Componentss.iconaddcons(context),
                   Expanded(
                     child:  Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -112,7 +113,7 @@ final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
                           decoration: InputDecoration(
                             // icon:Componentss.iconaddcons(context),
                             //labelText: "Destination",
-                            hintText: 'destination:\n ${CritereSelect.arrive}'
+                            hintText: 'Destination:\n ${CritereSelect.arrive}'
                           ),
                           onTap: () {
                        CritereSelect.est_Depart_Ou_Arrive=2;

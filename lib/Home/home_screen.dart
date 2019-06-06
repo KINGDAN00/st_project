@@ -11,42 +11,12 @@ import 'package:flights_app/MyDesigns/historiquePast.dart';
 import 'package:flights_app/MyDesigns/menuParam.dart/menuAproposConf.dart';
 import 'package:flights_app/MyDesigns/menuParam.dart/menuAproposDesc.dart';
 import 'package:flights_app/MyDesigns/tab_aller_retour.dart';
-//import 'package:flights_app/home_page.dart';
 import 'package:flights_app/login_signup_screens/login_screen.dart';
-import 'package:flights_app/myCompteMoney/custom_gift_card.dart';
 import 'package:flights_app/login_signup_screens/profile.dart';
-//import 'package:flights_app/myCompteMoney/first_page.dart';
 import 'package:flights_app/myCompteMoney/pass_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:percent_indicator/linear_percent_indicator.dart';
-
-//void main() => runApp(HomeScreen());
-
-//class HomeScreen extends StatelessWidget {
-//  // This widget is the root of your application.
-//  @override
-//  Widget build(BuildContext context) {
-//    return MaterialApp(
-//      title: 'Flutter Demo',
-//      theme: ThemeData(
-//        // This is the theme of your application.
-//        //
-//        // Try running your application with "flutter run". You'll see the
-//        // application has a blue toolbar. Then, without quitting the app, try
-//        // changing the primarySwatch below to Colors.green and then invoke
-//        // "hot reload" (press "r" in the console where you ran "flutter run",
-//        // or simply save your changes to "hot reload" in a Flutter IDE).
-//        // Notice that the counter didn't reset back to zero; the application
-//        // is not restarted.
-//        primarySwatch: Colors.blue,
-//      ),
-//      debugShowCheckedModeBanner: false,
-//      home: MyHomePage(title: ''),
-//    );
-//  }
-//}
-////
+import 'package:carousel_pro/carousel_pro.dart';
 class MyHomePageScreen extends StatefulWidget {
   @override
   HomeScreen createState() => HomeScreen();
@@ -125,7 +95,9 @@ class HomeScreen extends State<MyHomePageScreen> {
                 ),
               ),
               new InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
                 child: new ListTile(
                   title: new Text('Home',
                       style: new TextStyle(color: Colors.blue)),
@@ -275,13 +247,13 @@ class HomeScreen extends State<MyHomePageScreen> {
                   if (PubCon.userPrivilege == "" ||
                       PubCon.userPrivilege == '0' ||
                       PubCon.userPrivilege == null) {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => LoginScreen(),
                             fullscreenDialog: true));
                   } else {
-                    Navigator.push(context,
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => HomeAdmin()));
                   }
 //Accueil Administration
@@ -340,9 +312,9 @@ class HomeScreen extends State<MyHomePageScreen> {
             Stack(
               children: <Widget>[
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 100),
+                    //SizedBox(height: 100),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.60,
                       child: buildGrid(context),
@@ -364,7 +336,14 @@ class HomeScreen extends State<MyHomePageScreen> {
                                 Colors.blue[300]
                               ])),
                       margin: EdgeInsets.only(left: 12, right: 12),
-                    )
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 12, right: 12),
+                      
+                      child: SizedBox(height: 120,
+                      child:ImageCarousel(),
+                      ),
+                    ),
                   ],
                 )
               ],
@@ -378,7 +357,7 @@ class HomeScreen extends State<MyHomePageScreen> {
       padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
       crossAxisCount: 2,
       shrinkWrap: true,
-      childAspectRatio: (MediaQuery.of(context).size.width - 60 / 2) / 300,
+      childAspectRatio: (MediaQuery.of(context).size.width - 60 / 3) / 300,
       children: <Widget>[
         buildTile(context, 0, "BATEAU", null, Icons.directions_boat, "O items",
             Colors.orange, Colors.orange[50]),
@@ -495,5 +474,75 @@ class HomeScreen extends State<MyHomePageScreen> {
       ),
 //      ),
     );
+  }
+}
+
+class ImageCarousel extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return 
+    GridView.count(
+      padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      //childAspectRatio: (MediaQuery.of(context).size.width - 60 / 3) / 300,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 6.0),
+          child: Container(
+            decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            child: Carousel(
+      boxFit:BoxFit.cover,
+      images:[
+            AssetImage('assets/images/1.png'),
+            AssetImage('assets/images/2.png'),
+            AssetImage('assets/images/3.png'),
+      ],
+      animationCurve:Curves.fastLinearToSlowEaseIn,
+      animationDuration:Duration(milliseconds: 3000)
+    ),
+          ),
+        ),
+    Padding(
+      padding: const EdgeInsets.only(left: 6.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        child: Carousel(
+          boxFit:BoxFit.cover,
+          images:[
+            AssetImage('assets/images/3.png'),
+            AssetImage('assets/images/1.png'),
+            AssetImage('assets/images/2.png'),
+          ],
+          animationCurve:Curves.linearToEaseOut,
+          animationDuration:Duration(milliseconds: 2000)
+        ),
+      ),
+    )
+      ],
+    );
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
   }
 }

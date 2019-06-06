@@ -1,6 +1,7 @@
 import 'package:flights_app/MyClasses/pub.dart';
 import 'package:flights_app/MyDesigns/Administration/engin_classes.dart';
 import 'package:flights_app/MyDesigns/Administration/engin_horaireList.dart';
+import 'package:flights_app/MyDesigns/Administration/rapportAgence.dart';
 import 'package:flutter/material.dart';
 //import 'package:http/http.dart' show get;
 import 'package:http/http.dart' as http;
@@ -132,7 +133,12 @@ var route = new MaterialPageRoute(
               new NosHoraires(value: enginFull),
         );
         Navigator.of(context).push(route);
-        } 
+        } else if(menu=='rapport'){
+          Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyReport(idEngin: enginFull.codeEngin,menuTrie: 'engin',)));
+        }
 
         
       },
